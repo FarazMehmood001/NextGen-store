@@ -636,9 +636,16 @@ function renderSkeletons() {
   }
 }
 
+let hasInitialDataLoaded = false;
+
 // ==================== DATA SYNC & RENDERING ====================
-async function refreshAllData() {
-  updateSyncStatusBanner(true, "Fetching live products & orders");
+async function refreshAllData({ showBanner = false, silent = false } = {}) {
+  const shouldShowBanner = showBanner || (!hasInitialDataLoaded && !silent);
+
+  if (shouldShowBanner) {
+    updateSyncStatusBanner(true, "Fetching live products & orders");
+  }
+
   try {
     try {
       await loadAdminProfileFromFirestore();
@@ -665,10 +672,16 @@ async function refreshAllData() {
       await loadAnnouncementAdminSettings();
     } catch (e) { }
 
-    updateSyncStatusBanner(false, `✅ Firestore Synced (${productsList.length} products, ${ordersList.length} orders)`);
+    if (shouldShowBanner) {
+      updateSyncStatusBanner(false, `✅ Firestore Synced (${productsList.length} products, ${ordersList.length} orders)`);
+    }
+
+    hasInitialDataLoaded = true;
   } catch (err) {
     console.warn("Admin data sync notice (using cached data):", err);
-    updateSyncStatusBanner(false, "✓ Synced with local cache");
+    if (shouldShowBanner) {
+      updateSyncStatusBanner(false, "✓ Synced with local cache");
+    }
   }
 }
 
@@ -1300,7 +1313,7 @@ function setupEventListeners() {
     if (refreshText) refreshText.textContent = "Syncing...";
 
     try {
-      await refreshAllData();
+      await refreshAllData({ showBanner: true });
       showToast("⚡ Dashboard data successfully synchronized!", "success", 2500);
     } catch (e) {
       showToast("Synced with local database cache", "info", 2000);
@@ -1313,20 +1326,15 @@ function setupEventListeners() {
     }
   });
 
-  // Auto-Refresh on custom events, tab switch focus, and multi-tab storage updates
-  window.addEventListener("aura_products_changed", () => refreshAllData());
-  window.addEventListener("aura_orders_changed", () => refreshAllData());
+  // Auto-Refresh on custom events and multi-tab updates (Silent in background)
+  window.addEventListener("aura_products_changed", () => refreshAllData({ silent: true }));
+  window.addEventListener("aura_orders_changed", () => refreshAllData({ silent: true }));
   window.addEventListener("aura_announcement_changed", () => loadAnnouncementAdminSettings());
 
-  // Auto-Refresh when user returns to this tab
-  window.addEventListener("focus", () => {
-    refreshAllData();
-  });
-
-  // Real-time synchronization across browser tabs
+  // Real-time synchronization across browser tabs (Silent)
   window.addEventListener("storage", (e) => {
     if (e.key === "aura_orders_cache" || e.key === "aura_products_cache" || e.key === "aura_announcement_cache") {
-      refreshAllData();
+      refreshAllData({ silent: true });
     }
   });
 }
