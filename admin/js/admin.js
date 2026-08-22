@@ -143,9 +143,71 @@ window.adminRemoveGalleryImage = (index) => {
   }
 };
 
+// ==================== LIVE EMAIL DISPATCH DIALOG ====================
+export function showLiveEmailDispatchModal(detail) {
+  const modal = document.getElementById("adminEmailDispatchModalOverlay");
+  if (!modal) return;
+
+  const recipientEl = document.getElementById("emailModalRecipient");
+  const statusBadgeEl = document.getElementById("emailModalStatusBadge");
+  const subjectEl = document.getElementById("emailModalSubject");
+  const previewEl = document.getElementById("emailModalPreviewContainer");
+  const gmailBtn = document.getElementById("emailModalGmailWebBtn");
+  const mailtoBtn = document.getElementById("emailModalOpenMailtoBtn");
+  const copyBtn = document.getElementById("emailModalCopyTemplateBtn");
+  const closeBtn = document.getElementById("closeAdminEmailModalBtn");
+
+  if (recipientEl) recipientEl.textContent = `${detail.customerName || 'Customer'} <${detail.to}>`;
+  if (statusBadgeEl) {
+    statusBadgeEl.textContent = detail.status;
+    statusBadgeEl.className = `status-badge status-${(detail.status || 'pending').toLowerCase()}`;
+  }
+  if (subjectEl) subjectEl.textContent = detail.subject;
+  if (previewEl) previewEl.innerHTML = detail.html;
+
+  if (gmailBtn) {
+    gmailBtn.href = detail.gmailWebUrl;
+  }
+  if (mailtoBtn) {
+    mailtoBtn.href = detail.mailtoUrl;
+  }
+
+  if (copyBtn) {
+    copyBtn.onclick = async () => {
+      try {
+        await navigator.clipboard.writeText(detail.plainText || detail.html);
+        showToast("📋 Status email template copied to clipboard!", "success");
+        copyBtn.textContent = "✓ Copied!";
+        setTimeout(() => {
+          copyBtn.innerHTML = "<span>📋 Copy Template</span>";
+        }, 2000);
+      } catch (err) {
+        showToast("Could not copy to clipboard", "warning");
+      }
+    };
+  }
+
+  if (closeBtn) {
+    closeBtn.onclick = () => modal.classList.remove("active");
+  }
+
+  modal.classList.add("active");
+}
+
+window.addEventListener("aura_email_dispatched", (e) => {
+  if (e.detail) {
+    showLiveEmailDispatchModal(e.detail);
+    showToast(`✉️ Live Email Dispatcher ready for ${e.detail.customerName || 'Customer'}!`, "success", 4000);
+  }
+});
+
 window.adminSendOrderEmail = async (orderId) => {
   const order = ordersList.find(o => String(o.id) === String(orderId));
-  if (!order) return;
+  if (!order) {
+    showToast("Order not found.", "warning");
+    return;
+  }
+  showToast(`Preparing status email for Order #${order.id}...`, "info", 2000);
   await EmailService.sendOrderStatusEmail(order, order.status || "Pending");
 };
 
@@ -551,7 +613,7 @@ function renderSkeletons() {
 
 // ==================== DATA SYNC & RENDERING ====================
 async function refreshAllData() {
-  updateSyncStatusBanner(true, "⚡ Connecting to Cloud Firestore... Fetching live products & orders");
+  updateSyncStatusBanner(true, "Fetching live products & orders");
   try {
     try {
       await loadAdminProfileFromFirestore();

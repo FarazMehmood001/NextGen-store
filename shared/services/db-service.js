@@ -38,7 +38,7 @@ export class DBService {
       try {
         // Ensure Admin Document exists in Firestore: admin/inventory
         await setDoc(doc(db, "admin", "inventory"), {
-          name: "Super Administrator",
+          name: "admin",
           email: "admin@gmail.com",
           password: "admin123",
           role: "admin",
