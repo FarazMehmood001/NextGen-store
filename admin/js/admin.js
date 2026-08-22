@@ -672,6 +672,7 @@ async function refreshAllData({ showBanner = false, silent = false } = {}) {
     try {
       await loadAnnouncementAdminSettings();
       await loadPromoBannerAdminSettings();
+      await loadFlashDealAdminSettings();
     } catch (e) { }
 
     if (shouldShowBanner) {
@@ -1115,6 +1116,150 @@ function updatePromoLivePreviewUI() {
   }
 }
 
+// ==================== HERO BENTO FLASH DEAL ADMIN SYSTEM ====================
+let currentFlashDealData = {
+  enabled: false,
+  badge: "🔥 Deal of the Day",
+  discountTag: "-25% OFF",
+  title: "Aura Horizon Watch",
+  description: "Sapphire crystal glass & ECG monitor.",
+  price: "Rs. 12,500",
+  originalPrice: "Rs. 16,500",
+  image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=400&q=80",
+  hours: 4,
+  minutes: 28,
+  seconds: 45,
+  buttonText: "Claim Deal"
+};
+
+async function loadFlashDealAdminSettings() {
+  try {
+    const data = await DBService.getFlashDeal();
+    if (data) {
+      currentFlashDealData = { ...currentFlashDealData, ...data };
+    }
+    populateFlashDealForm();
+    updateFlashDealLivePreviewUI();
+  } catch (err) {
+    console.warn("Failed to load flash deal admin settings:", err);
+  }
+}
+
+function populateFlashDealForm() {
+  const toggle = document.getElementById("flashDealEnabledToggle");
+  const badgeInput = document.getElementById("flashDealBadgeInput");
+  const discountInput = document.getElementById("flashDealDiscountInput");
+  const titleInput = document.getElementById("flashDealTitleInput");
+  const descInput = document.getElementById("flashDealDescInput");
+  const priceInput = document.getElementById("flashDealPriceInput");
+  const origPriceInput = document.getElementById("flashDealOriginalPriceInput");
+  const imageInput = document.getElementById("flashDealImageInput");
+  const hoursInput = document.getElementById("flashDealHoursInput");
+  const minsInput = document.getElementById("flashDealMinsInput");
+  const secsInput = document.getElementById("flashDealSecsInput");
+  const btnTextInput = document.getElementById("flashDealBtnTextInput");
+
+  if (toggle) toggle.checked = Boolean(currentFlashDealData.enabled);
+  if (badgeInput) badgeInput.value = currentFlashDealData.badge || "🔥 Deal of the Day";
+  if (discountInput) discountInput.value = currentFlashDealData.discountTag || "-25% OFF";
+  if (titleInput) titleInput.value = currentFlashDealData.title || "";
+  if (descInput) descInput.value = currentFlashDealData.description || "";
+  if (priceInput) priceInput.value = currentFlashDealData.price || "Rs. 12,500";
+  if (origPriceInput) origPriceInput.value = currentFlashDealData.originalPrice || "";
+  if (imageInput) imageInput.value = currentFlashDealData.image || "";
+  if (hoursInput) hoursInput.value = currentFlashDealData.hours !== undefined ? currentFlashDealData.hours : 4;
+  if (minsInput) minsInput.value = currentFlashDealData.minutes !== undefined ? currentFlashDealData.minutes : 28;
+  if (secsInput) secsInput.value = currentFlashDealData.seconds !== undefined ? currentFlashDealData.seconds : 45;
+  if (btnTextInput) btnTextInput.value = currentFlashDealData.buttonText || "Claim Deal";
+}
+
+function updateFlashDealLivePreviewUI() {
+  const toggle = document.getElementById("flashDealEnabledToggle");
+  const badgeInput = document.getElementById("flashDealBadgeInput");
+  const discountInput = document.getElementById("flashDealDiscountInput");
+  const titleInput = document.getElementById("flashDealTitleInput");
+  const descInput = document.getElementById("flashDealDescInput");
+  const priceInput = document.getElementById("flashDealPriceInput");
+  const origPriceInput = document.getElementById("flashDealOriginalPriceInput");
+  const imageInput = document.getElementById("flashDealImageInput");
+  const hoursInput = document.getElementById("flashDealHoursInput");
+  const minsInput = document.getElementById("flashDealMinsInput");
+  const secsInput = document.getElementById("flashDealSecsInput");
+  const btnTextInput = document.getElementById("flashDealBtnTextInput");
+
+  const previewBox = document.getElementById("adminFlashDealLivePreview");
+  const previewBadge = document.getElementById("adminFlashDealPreviewBadge");
+  const previewDiscount = document.getElementById("adminFlashDealPreviewDiscount");
+  const previewTitle = document.getElementById("adminFlashDealPreviewTitle");
+  const previewDesc = document.getElementById("adminFlashDealPreviewDesc");
+  const previewImgWrapper = document.getElementById("adminFlashDealPreviewImgWrapper");
+  const previewImg = document.getElementById("adminFlashDealPreviewImg");
+  const previewHours = document.getElementById("adminFlashDealPreviewHours");
+  const previewMins = document.getElementById("adminFlashDealPreviewMins");
+  const previewSecs = document.getElementById("adminFlashDealPreviewSecs");
+  const previewPrice = document.getElementById("adminFlashDealPreviewPrice");
+  const previewOrigPrice = document.getElementById("adminFlashDealPreviewOrigPrice");
+  const previewBtn = document.getElementById("adminFlashDealPreviewBtn");
+  const statusIndicator = document.getElementById("flashDealStatusIndicator");
+
+  const isEnabled = toggle ? toggle.checked : false;
+
+  if (statusIndicator) {
+    if (isEnabled) {
+      statusIndicator.innerHTML = '<span style="width:8px; height:8px; border-radius:50%; background:#10b981;"></span><span>STATUS: LIVE ON STORE</span>';
+      statusIndicator.style.background = "rgba(16, 185, 129, 0.15)";
+      statusIndicator.style.color = "#10b981";
+      statusIndicator.style.borderColor = "rgba(16, 185, 129, 0.3)";
+    } else {
+      statusIndicator.innerHTML = '<span style="width:8px; height:8px; border-radius:50%; background:#ef4444;"></span><span>STATUS: HIDDEN / OFF</span>';
+      statusIndicator.style.background = "rgba(239, 68, 68, 0.15)";
+      statusIndicator.style.color = "#ef4444";
+      statusIndicator.style.borderColor = "rgba(239, 68, 68, 0.3)";
+    }
+  }
+
+  if (previewBadge) previewBadge.textContent = badgeInput?.value.trim() || "🔥 Deal of the Day";
+  if (previewDiscount) previewDiscount.textContent = discountInput?.value.trim() || "-25% OFF";
+  if (previewTitle) previewTitle.textContent = titleInput?.value.trim() || "Aura Horizon Watch";
+  if (previewDesc) previewDesc.textContent = descInput?.value.trim() || "Sapphire crystal glass & ECG monitor.";
+
+  const imgUrl = imageInput?.value.trim() || "";
+  if (previewImg && previewImgWrapper) {
+    if (imgUrl) {
+      previewImg.src = imgUrl;
+      previewImgWrapper.style.display = "flex";
+    } else {
+      previewImgWrapper.style.display = "none";
+    }
+  }
+
+  if (previewHours) previewHours.textContent = String(hoursInput?.value || 4).padStart(2, "0");
+  if (previewMins) previewMins.textContent = String(minsInput?.value || 28).padStart(2, "0");
+  if (previewSecs) previewSecs.textContent = String(secsInput?.value || 45).padStart(2, "0");
+
+  if (previewPrice) previewPrice.textContent = priceInput?.value.trim() || "Rs. 12,500";
+  if (previewOrigPrice) {
+    const orig = origPriceInput?.value.trim();
+    if (orig) {
+      previewOrigPrice.textContent = orig;
+      previewOrigPrice.style.display = "inline";
+    } else {
+      previewOrigPrice.style.display = "none";
+    }
+  }
+  if (previewBtn) previewBtn.textContent = btnTextInput?.value.trim() || "Claim Deal";
+
+  if (previewBox) {
+    if (!isEnabled) {
+      previewBox.style.opacity = "0.45";
+      previewBox.style.filter = "grayscale(0.7)";
+    } else {
+      previewBox.style.opacity = "1";
+      previewBox.style.filter = "none";
+    }
+  }
+}
+
 // ==================== EVENT LISTENERS SETUP ====================
 function setupEventListeners() {
   // Topbar and Section Header Add Product Buttons
@@ -1439,6 +1584,99 @@ function setupEventListeners() {
     }
   });
 
+  // Hero Bento Flash Deal Live Controls & Form Submit
+  const flashEnabledToggle = document.getElementById("flashDealEnabledToggle");
+  const flashBadgeInput = document.getElementById("flashDealBadgeInput");
+  const flashDiscountInput = document.getElementById("flashDealDiscountInput");
+  const flashTitleInput = document.getElementById("flashDealTitleInput");
+  const flashDescInput = document.getElementById("flashDealDescInput");
+  const flashPriceInput = document.getElementById("flashDealPriceInput");
+  const flashOrigPriceInput = document.getElementById("flashDealOriginalPriceInput");
+  const flashImageInput = document.getElementById("flashDealImageInput");
+  const flashHoursInput = document.getElementById("flashDealHoursInput");
+  const flashMinsInput = document.getElementById("flashDealMinsInput");
+  const flashSecsInput = document.getElementById("flashDealSecsInput");
+  const flashBtnTextInput = document.getElementById("flashDealBtnTextInput");
+  const adminFlashDealForm = document.getElementById("adminFlashDealForm");
+  const flashDealTurnOffBtn = document.getElementById("flashDealTurnOffBtn");
+
+  flashEnabledToggle?.addEventListener("change", () => updateFlashDealLivePreviewUI());
+  flashBadgeInput?.addEventListener("input", () => updateFlashDealLivePreviewUI());
+  flashDiscountInput?.addEventListener("input", () => updateFlashDealLivePreviewUI());
+  flashTitleInput?.addEventListener("input", () => updateFlashDealLivePreviewUI());
+  flashDescInput?.addEventListener("input", () => updateFlashDealLivePreviewUI());
+  flashPriceInput?.addEventListener("input", () => updateFlashDealLivePreviewUI());
+  flashOrigPriceInput?.addEventListener("input", () => updateFlashDealLivePreviewUI());
+  flashImageInput?.addEventListener("input", () => updateFlashDealLivePreviewUI());
+  flashHoursInput?.addEventListener("input", () => updateFlashDealLivePreviewUI());
+  flashMinsInput?.addEventListener("input", () => updateFlashDealLivePreviewUI());
+  flashSecsInput?.addEventListener("input", () => updateFlashDealLivePreviewUI());
+  flashBtnTextInput?.addEventListener("input", () => updateFlashDealLivePreviewUI());
+
+  adminFlashDealForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const saveBtn = document.getElementById("flashDealSaveBtn");
+    if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = "Publishing Flash Deal..."; }
+
+    try {
+      const payload = {
+        enabled: Boolean(flashEnabledToggle?.checked),
+        badge: flashBadgeInput?.value.trim() || "🔥 Deal of the Day",
+        discountTag: flashDiscountInput?.value.trim() || "-25% OFF",
+        title: flashTitleInput?.value.trim() || "Aura Horizon Watch",
+        description: flashDescInput?.value.trim() || "",
+        price: flashPriceInput?.value.trim() || "Rs. 12,500",
+        originalPrice: flashOrigPriceInput?.value.trim() || "",
+        image: flashImageInput?.value.trim() || "",
+        hours: parseInt(flashHoursInput?.value) >= 0 ? parseInt(flashHoursInput?.value) : 4,
+        minutes: parseInt(flashMinsInput?.value) >= 0 ? parseInt(flashMinsInput?.value) : 28,
+        seconds: parseInt(flashSecsInput?.value) >= 0 ? parseInt(flashSecsInput?.value) : 45,
+        buttonText: flashBtnTextInput?.value.trim() || "Claim Deal"
+      };
+
+      await DBService.saveFlashDeal(payload);
+      currentFlashDealData = { ...payload };
+      updateFlashDealLivePreviewUI();
+
+      if (payload.enabled) {
+        showToast("⚡ Hero Flash Deal published and live on storefront!", "success");
+      } else {
+        showToast("Hero Flash Deal saved (currently hidden/disabled).", "info");
+      }
+    } catch (err) {
+      showToast("Failed to save flash deal: " + err.message, "error");
+    } finally {
+      if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = "💾 Save & Publish Flash Deal"; }
+    }
+  });
+
+  flashDealTurnOffBtn?.addEventListener("click", async () => {
+    if (flashEnabledToggle) flashEnabledToggle.checked = false;
+    updateFlashDealLivePreviewUI();
+
+    try {
+      const payload = {
+        enabled: false,
+        badge: flashBadgeInput?.value.trim() || "🔥 Deal of the Day",
+        discountTag: flashDiscountInput?.value.trim() || "-25% OFF",
+        title: flashTitleInput?.value.trim() || "Aura Horizon Watch",
+        description: flashDescInput?.value.trim() || "",
+        price: flashPriceInput?.value.trim() || "Rs. 12,500",
+        originalPrice: flashOrigPriceInput?.value.trim() || "",
+        image: flashImageInput?.value.trim() || "",
+        hours: parseInt(flashHoursInput?.value) || 4,
+        minutes: parseInt(flashMinsInput?.value) || 28,
+        seconds: parseInt(flashSecsInput?.value) || 45,
+        buttonText: flashBtnTextInput?.value.trim() || "Claim Deal"
+      };
+      await DBService.saveFlashDeal(payload);
+      currentFlashDealData = { ...payload };
+      showToast("🚫 Hero flash deal card has been disabled and hidden from store.", "info");
+    } catch (err) {
+      showToast("Error updating flash deal: " + err.message, "error");
+    }
+  });
+
   // Built-in Admin Gate Login Form (Modal)
   document.getElementById("gateLoginForm")?.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -1487,10 +1725,11 @@ function setupEventListeners() {
   window.addEventListener("aura_products_changed", () => refreshAllData({ silent: true }));
   window.addEventListener("aura_orders_changed", () => refreshAllData({ silent: true }));
   window.addEventListener("aura_announcement_changed", () => loadAnnouncementAdminSettings());
+  window.addEventListener("aura_flash_deal_changed", () => loadFlashDealAdminSettings());
 
   // Real-time synchronization across browser tabs (Silent)
   window.addEventListener("storage", (e) => {
-    if (e.key === "aura_orders_cache" || e.key === "aura_products_cache" || e.key === "aura_announcement_cache") {
+    if (e.key === "aura_orders_cache" || e.key === "aura_products_cache" || e.key === "aura_announcement_cache" || e.key === "aura_flash_deal_cache") {
       refreshAllData({ silent: true });
     }
   });

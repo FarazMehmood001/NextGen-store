@@ -644,6 +644,83 @@ export class DBService {
     window.dispatchEvent(new CustomEvent("aura_promo_banner_changed", { detail: cleanData }));
     return cleanData;
   }
+
+  // ==================== BENTO HERO FLASH DEAL SETTINGS ====================
+  static async getFlashDeal() {
+    const LOCAL_FLASH_DEAL_KEY = "aura_flash_deal_cache";
+    let localData = null;
+    try {
+      const raw = localStorage.getItem(LOCAL_FLASH_DEAL_KEY);
+      if (raw) localData = JSON.parse(raw);
+    } catch (e) { }
+
+    if (isFirebaseConnected && db) {
+      try {
+        const docRef = doc(db, "settings", "flash_deal");
+        const snap = await getDoc(docRef);
+        if (snap.exists()) {
+          const cloudData = snap.data();
+          saveLocalItems(LOCAL_FLASH_DEAL_KEY, cloudData);
+          return cloudData;
+        }
+      } catch (e) {
+        console.warn("Firestore flash deal fetch error:", e);
+      }
+    }
+
+    if (localData) return localData;
+
+    return {
+      enabled: false, // Default is OFF / Hidden until admin turns it on
+      badge: "🔥 Deal of the Day",
+      discountTag: "-25% OFF",
+      title: "Aura Horizon Watch",
+      description: "Sapphire crystal glass & ECG monitor.",
+      price: "Rs. 12,500",
+      originalPrice: "Rs. 16,500",
+      image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=400&q=80",
+      hours: 4,
+      minutes: 28,
+      seconds: 45,
+      buttonText: "Claim Deal",
+      updatedAt: new Date().toISOString()
+    };
+  }
+
+  static async saveFlashDeal(dealData) {
+    const LOCAL_FLASH_DEAL_KEY = "aura_flash_deal_cache";
+    const cleanData = {
+      enabled: Boolean(dealData.enabled),
+      badge: (dealData.badge || "🔥 Deal of the Day").trim(),
+      discountTag: (dealData.discountTag || "-25% OFF").trim(),
+      title: (dealData.title || "Aura Horizon Watch").trim(),
+      description: (dealData.description || "").trim(),
+      price: (dealData.price || "").trim(),
+      originalPrice: (dealData.originalPrice || "").trim(),
+      image: (dealData.image || "").trim(),
+      hours: parseInt(dealData.hours) >= 0 ? parseInt(dealData.hours) : 4,
+      minutes: parseInt(dealData.minutes) >= 0 ? parseInt(dealData.minutes) : 28,
+      seconds: parseInt(dealData.seconds) >= 0 ? parseInt(dealData.seconds) : 45,
+      buttonText: (dealData.buttonText || "Claim Deal").trim(),
+      updatedAt: new Date().toISOString()
+    };
+
+    if (isFirebaseConnected && db) {
+      try {
+        await setDoc(doc(db, "settings", "flash_deal"), cleanData, { merge: true });
+        console.log("✅ Flash deal settings saved to Firestore settings/flash_deal");
+      } catch (e) {
+        console.warn("Firestore flash deal save error:", e);
+      }
+    }
+
+    try {
+      localStorage.setItem(LOCAL_FLASH_DEAL_KEY, JSON.stringify(cleanData));
+    } catch (e) { }
+
+    window.dispatchEvent(new CustomEvent("aura_flash_deal_changed", { detail: cleanData }));
+    return cleanData;
+  }
 }
 
 DBService.init();

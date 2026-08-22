@@ -271,12 +271,52 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  transition: all 0.35s ease;
+}
+
+.hero-bento-grid.deal-hidden {
+  grid-template-columns: 1.5fr 1fr;
+}
+
+.hero-bento-grid.deal-hidden .bento-main {
+  grid-column: 1 / 2;
+  grid-row: 1 / 2;
+}
+
+.hero-bento-grid.deal-hidden .bento-social {
+  grid-column: 2 / 3;
+  grid-row: 1 / 2;
+}
+
+.deal-card-img-thumb {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+  border: 1px solid rgba(249, 115, 22, 0.35);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+
+.deal-card-img-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.bento-deal:hover .deal-card-img-thumb img {
+  transform: scale(1.08);
 }
 
 .countdown-box {
   display: flex;
   gap: 0.5rem;
-  margin: 1rem 0;
+  margin: 0.85rem 0;
 }
 
 .countdown-digit-pill {

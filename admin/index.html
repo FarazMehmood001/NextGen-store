@@ -504,6 +504,181 @@
               </div>
             </form>
           </div>
+
+          <!-- ==================== 5. HERO BENTO FLASH DEAL CARD MANAGEMENT ==================== -->
+          <div class="admin-card" style="margin-top: 2rem;">
+            <div class="admin-card-header" style="align-items:flex-start;">
+              <div>
+                <h3 class="admin-card-title">
+                  <span>⚡ Hero Bento Flash Deal Card (Countdown & Picture)</span>
+                </h3>
+                <p style="color:var(--text-secondary); font-size:0.85rem; margin-top:0.25rem;">
+                  Manage the top hero Bento deal card. Set product image, title, price, discount badge, and countdown timer. Turn it ON/OFF anytime.
+                </p>
+              </div>
+              <div id="flashDealStatusIndicator"
+                style="display:inline-flex; align-items:center; gap:0.5rem; padding:0.4rem 0.85rem; border-radius:20px; font-size:0.8rem; font-weight:700; background:rgba(239, 68, 68, 0.15); color:#ef4444; border:1px solid rgba(239, 68, 68, 0.3);">
+                <span style="width:8px; height:8px; border-radius:50%; background:#ef4444;"></span>
+                <span>STATUS: HIDDEN / OFF</span>
+              </div>
+            </div>
+
+            <!-- Real-time Live Preview Card -->
+            <div style="margin-bottom:1.5rem; background:var(--bg-elevated); border:1px solid var(--glass-border); border-radius:var(--radius-lg); padding:1.5rem;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+                <h4 style="font-size:0.9rem; font-weight:700; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.04em;">
+                  👁️ Real-Time Hero Flash Deal Storefront Preview
+                </h4>
+                <span style="font-size:0.75rem; color:var(--text-muted);">Exact visual appearance in hero section</span>
+              </div>
+
+              <div id="adminFlashDealLivePreview"
+                style="max-width:380px; margin:0 auto; background: linear-gradient(135deg, rgba(249, 115, 22, 0.12) 0%, rgba(244, 63, 94, 0.1) 100%); border: 1px solid rgba(249, 115, 22, 0.35); border-radius:16px; padding: 1.5rem; box-shadow:0 8px 24px rgba(0,0,0,0.3);">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:0.75rem;">
+                  <div style="flex:1;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+                      <span id="adminFlashDealPreviewBadge"
+                        style="font-size:0.75rem; font-weight:800; color:var(--color-orange); text-transform:uppercase; letter-spacing:0.05em;">🔥 Deal of the Day</span>
+                      <span id="adminFlashDealPreviewDiscount"
+                        style="font-size:0.75rem; background:rgba(249,115,22,0.2); color:var(--color-orange); padding:2px 8px; border-radius:10px; font-weight:800;">-25% OFF</span>
+                    </div>
+                    <h4 id="adminFlashDealPreviewTitle" style="font-size:1.15rem; font-weight:800; margin-bottom:0.25rem; color:#f8fafc;">
+                      Aura Horizon Watch
+                    </h4>
+                    <p id="adminFlashDealPreviewDesc" style="font-size:0.8rem; color:var(--text-muted); line-height:1.3;">
+                      Sapphire crystal glass & ECG monitor.
+                    </p>
+                  </div>
+                  <div id="adminFlashDealPreviewImgWrapper"
+                    style="width:58px; height:58px; border-radius:10px; background:var(--bg-elevated); border:1px solid rgba(249, 115, 22, 0.4); overflow:hidden; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                    <img id="adminFlashDealPreviewImg" src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=400&q=80" alt="Deal" style="width:100%; height:100%; object-fit:cover;">
+                  </div>
+                </div>
+
+                <div style="display:flex; gap:0.4rem; margin:0.85rem 0;">
+                  <div style="flex:1; background:var(--bg-elevated); border:1px solid rgba(249, 115, 22, 0.35); border-radius:8px; padding:0.5rem 0.3rem; text-align:center;">
+                    <span id="adminFlashDealPreviewHours" style="display:block; font-family:'Space Grotesk',monospace; font-size:1.15rem; font-weight:800; color:var(--color-orange);">04</span>
+                    <label style="font-size:0.62rem; text-transform:uppercase; color:var(--text-muted); font-weight:700;">Hours</label>
+                  </div>
+                  <div style="flex:1; background:var(--bg-elevated); border:1px solid rgba(249, 115, 22, 0.35); border-radius:8px; padding:0.5rem 0.3rem; text-align:center;">
+                    <span id="adminFlashDealPreviewMins" style="display:block; font-family:'Space Grotesk',monospace; font-size:1.15rem; font-weight:800; color:var(--color-orange);">28</span>
+                    <label style="font-size:0.62rem; text-transform:uppercase; color:var(--text-muted); font-weight:700;">Mins</label>
+                  </div>
+                  <div style="flex:1; background:var(--bg-elevated); border:1px solid rgba(249, 115, 22, 0.35); border-radius:8px; padding:0.5rem 0.3rem; text-align:center;">
+                    <span id="adminFlashDealPreviewSecs" style="display:block; font-family:'Space Grotesk',monospace; font-size:1.15rem; font-weight:800; color:var(--color-orange);">45</span>
+                    <label style="font-size:0.62rem; text-transform:uppercase; color:var(--text-muted); font-weight:700;">Secs</label>
+                  </div>
+                </div>
+
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.4rem;">
+                  <div>
+                    <span id="adminFlashDealPreviewPrice" style="font-size:1.15rem; font-weight:800; color:var(--color-orange);">Rs. 12,500</span>
+                    <span id="adminFlashDealPreviewOrigPrice" style="font-size:0.8rem; color:var(--text-muted); text-decoration:line-through; margin-left:4px;">Rs. 16,500</span>
+                  </div>
+                  <button type="button" class="btn btn-secondary btn-sm" id="adminFlashDealPreviewBtn" style="border-color:var(--color-orange); color:var(--color-orange); font-weight:800; pointer-events:none;">
+                    Claim Deal
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Configuration Form -->
+            <form id="adminFlashDealForm">
+              <div class="form-group"
+                style="background:var(--bg-elevated); padding:1rem 1.25rem; border-radius:var(--radius-md); border:1px solid var(--glass-border); display:flex; align-items:center; justify-content:space-between;">
+                <div>
+                  <strong style="display:block; font-size:0.95rem; color:var(--text-primary);">Enable Hero Flash Deal Card</strong>
+                  <span style="font-size:0.8rem; color:var(--text-secondary);">When switched OFF, this deal box is completely removed from the homepage.</span>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="flashDealEnabledToggle">
+                  <span class="switch-slider" id="flashDealToggleSliderSpan"></span>
+                </label>
+              </div>
+
+              <div class="form-grid-2" style="margin-top:1.25rem;">
+                <div class="form-group">
+                  <label class="form-label" for="flashDealBadgeInput">Badge / Tag Title</label>
+                  <input type="text" id="flashDealBadgeInput" class="form-input"
+                    placeholder="e.g. 🔥 Deal of the Day" value="🔥 Deal of the Day">
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="flashDealDiscountInput">Discount Percentage Tag</label>
+                  <input type="text" id="flashDealDiscountInput" class="form-input"
+                    placeholder="e.g. -25% OFF or 50% OFF" value="-25% OFF">
+                </div>
+              </div>
+
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label class="form-label" for="flashDealTitleInput">Product Deal Name *</label>
+                  <input type="text" id="flashDealTitleInput" class="form-input"
+                    placeholder="e.g. Aura Horizon Watch" value="Aura Horizon Watch" required>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="flashDealImageInput">Product Picture URL (Optional)</label>
+                  <input type="url" id="flashDealImageInput" class="form-input"
+                    placeholder="https://images.unsplash.com/..." value="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=400&q=80">
+                  <small style="color:var(--text-muted); font-size:0.75rem;">Paste any image link (Unsplash, Cloudinary, etc.)</small>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="flashDealDescInput">Product Subtitle / Features</label>
+                <input type="text" id="flashDealDescInput" class="form-input"
+                  placeholder="e.g. Sapphire crystal glass & ECG monitor." value="Sapphire crystal glass & ECG monitor.">
+              </div>
+
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label class="form-label" for="flashDealPriceInput">Deal Price *</label>
+                  <input type="text" id="flashDealPriceInput" class="form-input"
+                    placeholder="e.g. Rs. 12,500" value="Rs. 12,500" required>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="flashDealOriginalPriceInput">Original Price (Strike-through)</label>
+                  <input type="text" id="flashDealOriginalPriceInput" class="form-input"
+                    placeholder="e.g. Rs. 16,500" value="Rs. 16,500">
+                </div>
+              </div>
+
+              <div style="background:var(--bg-elevated); padding:1rem 1.25rem; border-radius:var(--radius-md); border:1px solid var(--glass-border); margin-bottom:1.25rem;">
+                <label class="form-label" style="margin-bottom:0.5rem; display:block;">⏳ Countdown Timer Initial Duration</label>
+                <div style="display:flex; gap:1rem; align-items:center;">
+                  <div style="flex:1;">
+                    <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:4px;">Hours</label>
+                    <input type="number" id="flashDealHoursInput" class="form-input" min="0" max="99" value="4">
+                  </div>
+                  <div style="flex:1;">
+                    <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:4px;">Minutes</label>
+                    <input type="number" id="flashDealMinsInput" class="form-input" min="0" max="59" value="28">
+                  </div>
+                  <div style="flex:1;">
+                    <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:4px;">Seconds</label>
+                    <input type="number" id="flashDealSecsInput" class="form-input" min="0" max="59" value="45">
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="flashDealBtnTextInput">Call to Action Button Text</label>
+                <input type="text" id="flashDealBtnTextInput" class="form-input"
+                  placeholder="e.g. Claim Deal" value="Claim Deal">
+              </div>
+
+              <div style="display:flex; gap:1rem; align-items:center; margin-top:1.5rem; justify-content:flex-end;">
+                <button type="button" class="btn btn-secondary" id="flashDealTurnOffBtn">
+                  🚫 Disable & Hide Flash Deal
+                </button>
+                <button type="submit" class="btn btn-primary" id="flashDealSaveBtn" style="padding:0.7rem 1.75rem; background:var(--grad-sunset); border:none;">
+                  💾 Save & Publish Flash Deal
+                </button>
+              </div>
+            </form>
+          </div>
         </section>
 
       </div>

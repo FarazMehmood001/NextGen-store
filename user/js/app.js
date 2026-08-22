@@ -34,6 +34,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   initLiveActivityTicker();
   await loadAnnouncementTicker();
   await loadPromoBanner();
+  await loadFlashDealCard();
   setupFAQAccordion();
 
   // Initialize Cart
@@ -103,27 +104,39 @@ function toggleTheme() {
 }
 
 // ==================== LIVE COUNTDOWN & ACTIVITY ====================
-function initFlashCountdownTimer() {
-  let totalSeconds = 4 * 3600 + 28 * 60 + 45; // 04h 28m 45s
+let flashCountdownInterval = null;
+function startFlashCountdown(hours = 4, mins = 28, secs = 45) {
+  if (flashCountdownInterval) clearInterval(flashCountdownInterval);
+  let totalSeconds = (parseInt(hours) || 0) * 3600 + (parseInt(mins) || 0) * 60 + (parseInt(secs) || 0);
+  if (totalSeconds <= 0) totalSeconds = 24 * 3600; // Default reset to 24h
 
-  setInterval(() => {
-    if (totalSeconds <= 0) {
-      totalSeconds = 24 * 3600; // Reset to 24h
-    }
-    totalSeconds--;
-
-    const hours = Math.floor(totalSeconds / 3600);
-    const mins = Math.floor((totalSeconds % 3600) / 60);
-    const secs = totalSeconds % 60;
+  const updateDisplay = () => {
+    const h = Math.floor(totalSeconds / 3600);
+    const m = Math.floor((totalSeconds % 3600) / 60);
+    const s = totalSeconds % 60;
 
     const elH = document.getElementById("dealHours");
     const elM = document.getElementById("dealMinutes");
     const elS = document.getElementById("dealSeconds");
 
-    if (elH) elH.textContent = String(hours).padStart(2, "0");
-    if (elM) elM.textContent = String(mins).padStart(2, "0");
-    if (elS) elS.textContent = String(secs).padStart(2, "0");
+    if (elH) elH.textContent = String(h).padStart(2, "0");
+    if (elM) elM.textContent = String(m).padStart(2, "0");
+    if (elS) elS.textContent = String(s).padStart(2, "0");
+  };
+
+  updateDisplay();
+
+  flashCountdownInterval = setInterval(() => {
+    if (totalSeconds <= 0) {
+      totalSeconds = 24 * 3600;
+    }
+    totalSeconds--;
+    updateDisplay();
   }, 1000);
+}
+
+function initFlashCountdownTimer() {
+  startFlashCountdown(4, 28, 45);
 }
 
 function initLiveActivityTicker() {
@@ -251,6 +264,68 @@ async function loadPromoBanner() {
   }
 }
 
+// ==================== HERO BENTO FLASH DEAL (ADMIN CONTROLLED) ====================
+async function loadFlashDealCard() {
+  const dealCard = document.getElementById("heroFlashDealCard");
+  const heroGrid = document.getElementById("heroBentoGrid");
+  const badgeEl = document.getElementById("flashDealBadge");
+  const discountTagEl = document.getElementById("flashDealDiscountTag");
+  const titleEl = document.getElementById("flashDealTitle");
+  const descEl = document.getElementById("flashDealDesc");
+  const imgWrapper = document.getElementById("flashDealImageWrapper");
+  const imgEl = document.getElementById("flashDealImage");
+  const priceEl = document.getElementById("flashDealPrice");
+  const origPriceEl = document.getElementById("flashDealOriginalPrice");
+  const btnEl = document.getElementById("flashDealBtn");
+
+  if (!dealCard) return;
+
+  try {
+    const data = await DBService.getFlashDeal();
+    if (data && data.enabled) {
+      if (badgeEl) badgeEl.textContent = data.badge || "🔥 Deal of the Day";
+      if (discountTagEl) discountTagEl.textContent = data.discountTag || "-25% OFF";
+      if (titleEl) titleEl.textContent = data.title || "Aura Horizon Watch";
+      if (descEl) descEl.textContent = data.description || "";
+      
+      if (imgWrapper && imgEl) {
+        if (data.image && data.image.trim()) {
+          imgEl.src = data.image.trim();
+          imgWrapper.style.display = "flex";
+        } else {
+          imgWrapper.style.display = "none";
+        }
+      }
+
+      if (priceEl) priceEl.textContent = data.price || "Rs. 12,500";
+      if (origPriceEl) {
+        if (data.originalPrice) {
+          origPriceEl.textContent = data.originalPrice;
+          origPriceEl.style.display = "inline";
+        } else {
+          origPriceEl.style.display = "none";
+        }
+      }
+
+      if (btnEl) {
+        btnEl.textContent = data.buttonText || "Claim Deal";
+      }
+
+      startFlashCountdown(data.hours, data.minutes, data.seconds);
+
+      dealCard.style.display = "flex";
+      if (heroGrid) heroGrid.classList.remove("deal-hidden");
+    } else {
+      dealCard.style.display = "none";
+      if (heroGrid) heroGrid.classList.add("deal-hidden");
+    }
+  } catch (err) {
+    console.warn("Failed to load flash deal card:", err);
+    dealCard.style.display = "none";
+    if (heroGrid) heroGrid.classList.add("deal-hidden");
+  }
+}
+
 // Listen for admin changes in real time across tabs and events
 window.addEventListener("aura_announcement_changed", () => {
   loadAnnouncementTicker();
@@ -258,12 +333,18 @@ window.addEventListener("aura_announcement_changed", () => {
 window.addEventListener("aura_promo_banner_changed", () => {
   loadPromoBanner();
 });
+window.addEventListener("aura_flash_deal_changed", () => {
+  loadFlashDealCard();
+});
 window.addEventListener("storage", (e) => {
   if (e.key === "aura_announcement_cache") {
     loadAnnouncementTicker();
   }
   if (e.key === "aura_promo_banner_cache") {
     loadPromoBanner();
+  }
+  if (e.key === "aura_flash_deal_cache") {
+    loadFlashDealCard();
   }
 });
 
