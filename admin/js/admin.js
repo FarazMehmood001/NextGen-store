@@ -282,6 +282,7 @@ window.adminViewOrder = (orderId) => {
 // ==================== INITIALIZATION ====================
 document.addEventListener("DOMContentLoaded", async () => {
   initAdminTheme();
+  renderSkeletons();
   setupNavigation();
   setupEventListeners();
   loadAdminProfileFromFirestore();
@@ -374,6 +375,95 @@ function setupNavigation() {
     document.body.classList.toggle("light-theme", isLight);
     localStorage.setItem("aura_theme", isLight ? "light" : "dark");
   });
+}
+
+// ==================== SKELETON LOADING SYSTEM ====================
+function renderSkeletons() {
+  // 1. KPI Skeletons
+  const revEl = document.getElementById("kpiTotalRevenue");
+  const ordEl = document.getElementById("kpiTotalOrders");
+  const prdEl = document.getElementById("kpiTotalProducts");
+  const pndEl = document.getElementById("kpiPendingOrders");
+
+  if (revEl && (!productsList.length && !ordersList.length)) revEl.innerHTML = `<span class="skeleton-box skeleton-kpi"></span>`;
+  if (ordEl && (!productsList.length && !ordersList.length)) ordEl.innerHTML = `<span class="skeleton-box skeleton-kpi" style="width:70px;"></span>`;
+  if (prdEl && (!productsList.length && !ordersList.length)) prdEl.innerHTML = `<span class="skeleton-box skeleton-kpi" style="width:70px;"></span>`;
+  if (pndEl && (!productsList.length && !ordersList.length)) pndEl.innerHTML = `<span class="skeleton-box skeleton-kpi" style="width:70px;"></span>`;
+
+  // 2. Recent Orders Table Skeleton
+  const recentTbody = document.getElementById("overviewRecentOrdersTbody");
+  if (recentTbody && !ordersList.length) {
+    recentTbody.innerHTML = Array.from({ length: 4 }).map(() => `
+      <tr class="skeleton-tr">
+        <td><span class="skeleton-box" style="width:85px; height:16px;"></span></td>
+        <td>
+          <span class="skeleton-box" style="width:130px; height:15px; display:block; margin-bottom:4px;"></span>
+          <span class="skeleton-box" style="width:90px; height:12px;"></span>
+        </td>
+        <td><span class="skeleton-box" style="width:80px; height:14px;"></span></td>
+        <td><span class="skeleton-box" style="width:95px; height:16px;"></span></td>
+        <td><span class="skeleton-box" style="width:75px; height:24px; border-radius:20px;"></span></td>
+        <td><span class="skeleton-box" style="width:50px; height:28px; border-radius:6px; float:right;"></span></td>
+      </tr>
+    `).join("");
+  }
+
+  // 3. Products Catalog Table Skeleton
+  const productsTbody = document.getElementById("productsTableTbody");
+  if (productsTbody && !productsList.length) {
+    productsTbody.innerHTML = Array.from({ length: 5 }).map(() => `
+      <tr class="skeleton-tr">
+        <td>
+          <div style="display:flex; align-items:center; gap:0.75rem;">
+            <span class="skeleton-box" style="width:44px; height:44px; border-radius:8px; flex-shrink:0;"></span>
+            <div style="flex:1;">
+              <span class="skeleton-box" style="width:140px; height:16px; display:block; margin-bottom:4px;"></span>
+              <span class="skeleton-box" style="width:80px; height:12px;"></span>
+            </div>
+          </div>
+        </td>
+        <td><span class="skeleton-box" style="width:80px; height:22px; border-radius:6px;"></span></td>
+        <td><span class="skeleton-box" style="width:90px; height:16px;"></span></td>
+        <td><span class="skeleton-box" style="width:75px; height:16px;"></span></td>
+        <td><span class="skeleton-box" style="width:90px; height:16px;"></span></td>
+        <td><span class="skeleton-box" style="width:40px; height:16px;"></span></td>
+        <td style="text-align:right;"><span class="skeleton-box" style="width:65px; height:28px; border-radius:6px;"></span></td>
+      </tr>
+    `).join("");
+  }
+
+  // 4. Orders Management Table Skeleton
+  const ordersTbody = document.getElementById("ordersTableTbody");
+  if (ordersTbody && !ordersList.length) {
+    ordersTbody.innerHTML = Array.from({ length: 5 }).map(() => `
+      <tr class="skeleton-tr">
+        <td>
+          <span class="skeleton-box" style="width:90px; height:16px; display:block; margin-bottom:4px;"></span>
+          <span class="skeleton-box" style="width:70px; height:12px;"></span>
+        </td>
+        <td>
+          <span class="skeleton-box" style="width:130px; height:16px; display:block; margin-bottom:4px;"></span>
+          <span class="skeleton-box" style="width:100px; height:13px; display:block; margin-bottom:2px;"></span>
+          <span class="skeleton-box" style="width:80px; height:12px;"></span>
+        </td>
+        <td>
+          <div style="display:flex; align-items:center; gap:0.5rem;">
+            <span class="skeleton-box" style="width:36px; height:36px; border-radius:6px; flex-shrink:0;"></span>
+            <div>
+              <span class="skeleton-box" style="width:110px; height:14px; display:block; margin-bottom:3px;"></span>
+              <span class="skeleton-box" style="width:65px; height:12px;"></span>
+            </div>
+          </div>
+        </td>
+        <td>
+          <span class="skeleton-box" style="width:95px; height:16px; display:block; margin-bottom:4px;"></span>
+          <span class="skeleton-box" style="width:60px; height:12px;"></span>
+        </td>
+        <td><span class="skeleton-box" style="width:100px; height:30px; border-radius:6px;"></span></td>
+        <td style="text-align:right;"><span class="skeleton-box" style="width:70px; height:28px; border-radius:6px;"></span></td>
+      </tr>
+    `).join("");
+  }
 }
 
 // ==================== DATA SYNC & RENDERING ====================
