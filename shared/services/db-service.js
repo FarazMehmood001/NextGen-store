@@ -576,6 +576,10 @@ export class DBService {
       localStorage.setItem(LOCAL_ANNOUNCEMENT_KEY, JSON.stringify(payload));
     } catch (e) { }
 
+    window.dispatchEvent(new CustomEvent("aura_announcement_changed", { detail: payload }));
+    return payload;
+  }
+
   // ==================== PROMOTIONAL DISCOUNT BANNER SETTINGS ====================
   static async getPromoBanner() {
     const LOCAL_PROMO_KEY = "aura_promo_banner_cache";

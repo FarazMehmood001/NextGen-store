@@ -369,6 +369,7 @@ window.adminViewOrder = (orderId) => {
 // ==================== INITIALIZATION ====================
 document.addEventListener("DOMContentLoaded", async () => {
   initAdminTheme();
+  AuthService.init();
   renderSkeletons();
   setupNavigation();
   setupEventListeners();
