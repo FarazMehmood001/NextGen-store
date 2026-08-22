@@ -1,6 +1,9 @@
 // shared/services/email-service.js
 import { db, isFirebaseConnected, doc, setDoc, addDoc, collection } from "../config/firebase-config.js";
-import { formatPKR } from "../../user/js/app.js";
+
+function formatPKR(amount) {
+  return "Rs. " + Number(amount || 0).toLocaleString("en-PK");
+}
 
 export class EmailService {
   /**
