@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NextGen Admin | Executive Cloud Management Portal</title>
+  <meta name="description"
+    content="NextGen Store Executive Admin Dashboard - Real-time Firestore Product and Order Management.">
+
+  <!-- CSS Stylesheets (Dual Root & Relative Path Fallbacks) -->
+  <link rel="stylesheet" href="/user/css/main.css">
+  <link rel="stylesheet" href="/user/css/components.css">
+  <link rel="stylesheet" href="/admin/css/admin.css">
+  <link rel="stylesheet" href="../user/css/main.css">
+  <link rel="stylesheet" href="../user/css/components.css">
+  <link rel="stylesheet" href="./css/admin.css">
+
+  <!-- Favicon -->
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'><rect width='24' height='24' rx='6' fill='%236366f1'/><path d='M5 18.5V5.5L13.5 15.5V5.5' stroke='white' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/><path d='M15.5 9L18.5 12L15.5 15' stroke='%2338bdf8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+
+  <!-- Instant Flicker-Free Theme Initializer -->
+  <script>
+    (function () {
+      const theme = localStorage.getItem("aura_theme") || "dark";
+      if (theme === "light") {
+        document.documentElement.classList.add("light-theme");
+      } else {
+        document.documentElement.classList.remove("light-theme");
+      }
+    })();
+  </script>
+</head>
+
+<body>
+
+  <div class="admin-layout">
+    <!-- ==================== ADMIN SIDEBAR ==================== -->
+    <aside class="admin-sidebar">
+      <div class="sidebar-header">
+        <div class="brand-icon" style="width:36px; height:36px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 19.5V4.5L14 16.5V4.5" stroke="white" stroke-width="2.6" stroke-linecap="round"
+              stroke-linejoin="round" />
+            <path d="M16.5 8.5L20 12L16.5 15.5" stroke="#38bdf8" stroke-width="2.4" stroke-linecap="round"
+              stroke-linejoin="round" />
+            <circle cx="20" cy="5" r="1.8" fill="#38bdf8" />
+          </svg>
+        </div>
+        <div>
+          <h3 style="font-size:1.15rem; font-weight:800;">NextGen Admin</h3>
+
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-link active" data-section="overviewSection" id="sideNavOverview">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+          <span>Overview</span>
+        </div>
+
+        <div class="sidebar-link" data-section="productsSection" id="sideNavProducts">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path
+              d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
+            </path>
+          </svg>
+          <span>Add Product</span>
+        </div>
+
+        <div class="sidebar-link" data-section="ordersSection" id="sideNavOrders">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <path d="M16 10a4 4 0 0 1-8 0"></path>
+          </svg>
+          <span>Orders Management</span>
+        </div>
+
+        <div class="sidebar-link" data-section="announcementSection" id="sideNavAnnouncement">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          <span>Announcement Bar</span>
+        </div>
+
+        <a href="../index.html" target="_blank" rel="noopener noreferrer" class="sidebar-link" style="margin-top:auto; color:var(--text-secondary);" title="Open Storefront in New Window">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+          <span>Go to Storefront ↗</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="admin-user-pill" style="flex:1; display:flex; align-items:center; gap:0.75rem; overflow:hidden;">
+          <img id="adminSidebarAvatar"
+            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236366f1'%3E%3Ccircle cx='12' cy='8' r='4'/%3E%3Cpath d='M4 20c0-4 4-6 8-6s8 2 8 6'/%3E%3C/svg%3E"
+            alt="Admin" class="admin-user-avatar"
+            style="width:38px; height:38px; max-width:38px; max-height:38px; border-radius:50%; object-fit:cover; flex-shrink:0;">
+          <div class="admin-user-info" style="flex:1; overflow:hidden;">
+            <h5 id="adminSidebarName" style="white-space:nowrap; text-overflow:ellipsis; overflow:hidden;">
+              Loading...
+            </h5>
+            <p id="adminSidebarEmail" style="white-space:nowrap; text-overflow:ellipsis; overflow:hidden;"></p>
+          </div>
+        </div>
+        <button id="adminSignOutBtn" title="Sign Out" class="table-action-btn delete-btn" style="margin-left:0.5rem;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+        </button>
+      </div>
+    </aside>
+
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <main class="admin-main">
+      <!-- Admin Topbar -->
+      <header class="admin-topbar">
+        <div class="admin-search-wrap">
+          <input type="text" id="adminGlobalSearch" class="admin-search-input"
+            placeholder="Quick search catalog or orders...">
+        </div>
+
+        <div class="admin-topbar-actions">
+          <button class="btn btn-secondary btn-sm" id="adminRefreshDataBtn" title="Sync & Refresh all Firestore data" style="display:inline-flex; align-items:center; gap:0.45rem;">
+            <svg id="adminRefreshIcon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+            </svg>
+            <span id="adminRefreshBtnText">Sync & Refresh</span>
+          </button>
+          <button class="btn btn-secondary btn-sm" id="adminThemeToggle" title="Toggle Theme">
+            🌓 Theme
+          </button>
+          <button class="btn btn-primary btn-sm" id="adminOpenAddProductBtn" onclick="window.adminOpenAddProduct()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Add New Product
+          </button>
+        </div>
+      </header>
+
+      <!-- Admin Views Container -->
+      <div class="admin-content">
+
+        <!-- ==================== 1. OVERVIEW SECTION ==================== -->
+        <section id="adminOverviewView">
+          <!-- KPI Cards -->
+          <div class="kpi-grid">
+            <div class="kpi-card kpi-sales">
+              <div class="kpi-icon-wrap">💰</div>
+              <div class="kpi-info">
+                <h4>Total Revenue</h4>
+                <h2 id="kpiTotalRevenue">Rs. 0</h2>
+              </div>
+            </div>
+
+            <div class="kpi-card kpi-orders">
+              <div class="kpi-icon-wrap">📦</div>
+              <div class="kpi-info">
+                <h4>Total Orders</h4>
+                <h2 id="kpiTotalOrders">0</h2>
+              </div>
+            </div>
+
+            <div class="kpi-card kpi-products">
+              <div class="kpi-icon-wrap">🏷️</div>
+              <div class="kpi-info">
+                <h4>Active Products</h4>
+                <h2 id="kpiTotalProducts">0</h2>
+              </div>
+            </div>
+
+            <div class="kpi-card kpi-pending">
+              <div class="kpi-icon-wrap">⏳</div>
+              <div class="kpi-info">
+                <h4>Pending Orders</h4>
+                <h2 id="kpiPendingOrders">0</h2>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Orders Card -->
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <h3 class="admin-card-title">
+                <span>Recent Customer Orders</span>
+              </h3>
+              <button class="btn btn-outline btn-sm" onclick="document.getElementById('sideNavOrders').click()">View All
+                Orders →</button>
+            </div>
+            <div class="table-responsive">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Customer</th>
+                    <th>Date</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="overviewRecentOrdersTbody">
+                  <!-- Rendered dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== 2. PRODUCTS MANAGEMENT SECTION ==================== -->
+        <section id="adminProductsView" style="display:none;">
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <div>
+                <h3 class="admin-card-title">Product Catalog Management</h3>
+                <p style="font-size:0.85rem; color:var(--text-secondary); margin-top:0.2rem;">Create, update, view and
+                  delete products synchronized with Cloud Firestore.</p>
+              </div>
+              <div style="display:flex; gap:0.75rem; align-items:center;">
+                <input type="text" id="productFilterInput" class="form-input"
+                  style="padding:0.45rem 0.85rem; font-size:0.85rem; width:220px;" placeholder="Filter products...">
+                <button class="btn btn-primary btn-sm" id="adminAddProductBtn2" onclick="window.adminOpenAddProduct()">+
+                  Add Product</button>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Product</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                    <th>Rating</th>
+                    <th>Featured</th>
+                    <th style="text-align:right;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="productsTableTbody">
+                  <!-- Rendered dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== 3. ORDERS MANAGEMENT SECTION ==================== -->
+        <section id="adminOrdersView" style="display:none;">
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <div>
+                <h3 class="admin-card-title">Customer Orders & Fulfillment</h3>
+                <p style="font-size:0.85rem; color:var(--text-secondary); margin-top:0.2rem;">Manage real-time incoming
+                  orders and update delivery status.</p>
+              </div>
+              <div style="display:flex; gap:0.75rem; align-items:center;">
+                <select id="orderStatusFilterSelect" class="select-control" style="font-size:0.85rem;">
+                  <option value="ALL">All Statuses</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Processing">Processing</option>
+                  <option value="Shipped">Shipped</option>
+                  <option value="Delivered">Delivered</option>
+                  <option value="Cancelled">Cancelled</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Customer Name & Contact</th>
+                    <th>Ordered Items</th>
+                    <th>Total Amount</th>
+                    <th>Update Status</th>
+                    <th style="text-align:right;">Details</th>
+                  </tr>
+                </thead>
+                <tbody id="ordersTableTbody">
+                  <!-- Rendered dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== 4. LIVE ANNOUNCEMENT BAR SECTION ==================== -->
+        <section id="adminAnnouncementView" style="display:none;">
+          <div class="admin-card">
+            <div class="admin-card-header" style="align-items:flex-start;">
+              <div>
+                <h3 class="admin-card-title">Top Announcement Bar Control</h3>
+                <p style="font-size:0.85rem; color:var(--text-secondary); margin-top:0.2rem;">
+                  Control the top promotional ticker banner displayed on the storefront in real-time. Turn it ON/OFF
+                  whenever you want.
+                </p>
+              </div>
+              <div id="announcementStatusIndicator"
+                style="display:inline-flex; align-items:center; gap:0.5rem; padding:0.4rem 0.85rem; border-radius:20px; font-size:0.8rem; font-weight:700; background:rgba(239, 68, 68, 0.15); color:#ef4444; border:1px solid rgba(239, 68, 68, 0.3);">
+                <span style="width:8px; height:8px; border-radius:50%; background:#ef4444;"></span>
+                <span>STATUS: HIDDEN / OFF</span>
+              </div>
+            </div>
+
+            <!-- Real-time Live Preview Card -->
+            <div
+              style="margin-bottom:1.5rem; background:var(--bg-elevated); border:1px solid var(--glass-border); border-radius:var(--radius-lg); padding:1.25rem;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+                <h4
+                  style="font-size:0.9rem; font-weight:700; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.04em;">
+                  👁️ Real-Time Storefront Preview
+                </h4>
+                <span style="font-size:0.75rem; color:var(--text-muted);">Matches exactly what customers will see</span>
+              </div>
+              <div id="adminAnnouncementLivePreview"
+                style="background: linear-gradient(90deg, #06b6d4 0%, #3b82f6 25%, #8b5cf6 50%, #ec4899 75%, #f97316 100%); color: white; padding: 0.6rem 1.25rem; font-size: 0.82rem; font-weight: 800; text-align: center; letter-spacing: 0.02em; text-shadow: 0 1px 2px rgba(0,0,0,0.3); border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.25); transition:all 0.3s ease;">
+                <span id="adminPreviewBadge"
+                  style="background:rgba(0,0,0,0.3); padding:2px 8px; border-radius:12px; margin-right:6px; font-weight:800;">FLASH
+                  OFFER</span>
+                <span id="adminPreviewText">Use code <strong>AURA10</strong> for 10% OFF • 🚀 Free Same-Day Express
+                  Dispatch in Pakistan</span>
+              </div>
+            </div>
+
+            <!-- Configuration Form -->
+            <form id="adminAnnouncementForm">
+              <div class="form-group"
+                style="background:var(--bg-elevated); padding:1rem 1.25rem; border-radius:var(--radius-md); border:1px solid var(--glass-border); display:flex; align-items:center; justify-content:space-between;">
+                <div>
+                  <strong style="display:block; font-size:0.95rem; color:var(--text-primary);">Enable Top Announcement
+                    Ticker</strong>
+                  <span style="font-size:0.8rem; color:var(--text-secondary);">When switched OFF, the announcement bar
+                    is completely removed and hidden from the website.</span>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="announcementEnabledToggle">
+                  <span class="switch-slider" id="toggleSliderSpan"></span>
+                </label>
+              </div>
+
+              <div class="form-grid-2" style="margin-top:1.25rem;">
+                <div class="form-group">
+                  <label class="form-label" for="announcementBadgeInput">Highlight Tag / Badge (Optional)</label>
+                  <input type="text" id="announcementBadgeInput" class="form-input"
+                    placeholder="e.g. FLASH OFFER or ⚡ LIMITED DEAL">
+                  <small style="color:var(--text-muted); font-size:0.75rem;">Shown as a rounded pill at the
+                    beginning</small>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="announcementGradientSelect">Theme Gradient Style</label>
+                  <select id="announcementGradientSelect" class="form-select">
+                    <option
+                      value="linear-gradient(90deg, #06b6d4 0%, #3b82f6 25%, #8b5cf6 50%, #ec4899 75%, #f97316 100%)">🌈
+                      Aurora Multi-Spectrum (Default)</option>
+                    <option value="linear-gradient(90deg, #ec4899 0%, #8b5cf6 50%, #3b82f6 100%)">🔮 Electric Cyberpunk
+                      (Pink / Purple / Blue)</option>
+                    <option value="linear-gradient(90deg, #f59e0b 0%, #ef4444 50%, #ec4899 100%)">🔥 Neon Sunset Flame
+                      (Orange / Red / Pink)</option>
+                    <option value="linear-gradient(90deg, #10b981 0%, #06b6d4 50%, #3b82f6 100%)">🌿 Emerald Horizon
+                      (Green / Teal / Blue)</option>
+                    <option value="linear-gradient(90deg, #18181b 0%, #27272a 50%, #09090b 100%)">🌑 Stealth Obsidian
+                      (Dark Luxury Metallic)</option>
+                    <option value="linear-gradient(90deg, #d97706 0%, #b45309 50%, #78350f 100%)">👑 Royal Gold Bronze
+                    </option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="announcementTextInput">Announcement Message & Promo Details *</label>
+                <textarea id="announcementTextInput" class="form-input" rows="3"
+                  placeholder="Use code AURA10 for 10% OFF • 🚀 Free Same-Day Express Dispatch in Pakistan"
+                  style="resize:vertical;" required></textarea>
+                <small style="color:var(--text-muted); font-size:0.75rem;">You can use simple HTML like
+                  &lt;strong&gt;CODE&lt;/strong&gt; for bold text and emojis ⚡ 🎉 📦</small>
+              </div>
+
+              <div style="display:flex; gap:1rem; align-items:center; margin-top:1.5rem; justify-content:flex-end;">
+                <button type="button" class="btn btn-secondary" id="announcementTurnOffBtn">
+                  🚫 Disable & Hide Bar
+                </button>
+                <button type="submit" class="btn btn-primary" id="announcementSaveBtn" style="padding:0.7rem 1.75rem;">
+                  💾 Save & Publish Announcement
+                </button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ==================== ADD / EDIT PRODUCT MODAL ==================== -->
+  <div class="modal-overlay" id="productModalOverlay">
+    <div class="modal-container" style="max-width: 650px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="productModalTitle">Add New Product</h3>
+        <button class="modal-close-btn" id="closeProductModalBtn">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="productForm">
+          <input type="hidden" id="formProductId">
+
+          <div class="form-group">
+            <label class="form-label" for="formTitle">Product Title *</label>
+            <input type="text" id="formTitle" class="form-input" placeholder="e.g. Aura Pro ANC Wireless Headphones"
+              required>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label" for="formCategory">Category *</label>
+              <select id="formCategory" class="form-select" required>
+                <option value="Audio">Audio</option>
+                <option value="Wearables">Wearables</option>
+                <option value="Electronics">Electronics</option>
+                <option value="Accessories">Accessories</option>
+                <option value="Home">Home & Living</option>
+                <option value="Fashion">Fashion</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="formBadge">Badge Tag</label>
+              <select id="formBadge" class="form-select">
+                <option value="New">New</option>
+                <option value="Bestseller">Bestseller</option>
+                <option value="Sale">Sale</option>
+                <option value="Hot">Hot</option>
+                <option value="Luxury">Luxury</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label" for="formPrice">Sale Price (Rs.) *</label>
+              <input type="number" id="formPrice" class="form-input" step="1" min="0" placeholder="24999" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="formOriginalPrice">Original / Compare Price (Rs.)</label>
+              <input type="number" id="formOriginalPrice" class="form-input" step="1" min="0" placeholder="29999">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="formStock">Inventory Stock Quantity *</label>
+            <input type="number" id="formStock" class="form-input" min="0" placeholder="25" required>
+          </div>
+
+          <!-- Multi-Image Upload & Camera Capture Component -->
+          <div class="form-group">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+              <label class="form-label" style="margin:0;">Product Image Gallery (Upload / Capture Multiple) *</label>
+              <span style="font-size:0.75rem; color:var(--text-muted);" id="imageCountBadge">0 images attached</span>
+            </div>
+
+            <!-- Upload Controls Action Bar -->
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.6rem; margin-bottom:0.75rem;">
+              <label class="btn btn-secondary btn-sm"
+                style="display:flex; align-items:center; justify-content:center; gap:0.4rem; cursor:pointer; padding:0.6rem;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                <span>📁 Upload / Pick Images</span>
+                <input type="file" id="formMultiFileInput" multiple accept="image/*" style="display:none;">
+              </label>
+
+              <button type="button" class="btn btn-secondary btn-sm" id="formOpenLiveCameraBtn"
+                style="display:flex; align-items:center; justify-content:center; gap:0.4rem; padding:0.6rem;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                  <circle cx="12" cy="13" r="4"></circle>
+                </svg>
+                <span>📸 Snap with Camera</span>
+              </button>
+            </div>
+
+            <!-- Paste Direct URL Option -->
+            <div style="display:flex; gap:0.5rem; margin-bottom:0.75rem;">
+              <input type="url" id="formDirectUrlInput" class="form-input"
+                style="padding:0.4rem 0.75rem; font-size:0.85rem;" placeholder="Or paste image URL (https://...)">
+              <button type="button" class="btn btn-secondary btn-sm" id="formAddUrlImageBtn"
+                style="white-space:nowrap; padding:0.4rem 0.85rem;">+ Add URL</button>
+            </div>
+
+            <!-- Multi-Image Thumbnails Gallery Strip -->
+            <div id="formImageThumbnailsGrid"
+              style="display:grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap:0.6rem; min-height:80px; background:var(--bg-card); border:1px dashed var(--glass-border); border-radius:var(--radius-md); padding:0.6rem;">
+              <div id="formNoImagesNotice"
+                style="grid-column: 1 / -1; display:flex; flex-direction:column; align-items:center; justify-content:center; color:var(--text-muted); font-size:0.8rem; padding:1.25rem 0;">
+                <span>🖼️ No images added yet.</span>
+                <span style="font-size:0.75rem; margin-top:0.25rem;">Pick files from computer or snap live photos with
+                  camera.</span>
+              </div>
+            </div>
+            <input type="hidden" id="formMainImageHidden" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="formDescription">Description *</label>
+            <textarea id="formDescription" class="form-textarea" rows="3"
+              placeholder="Provide detailed technical specifications and features..." required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
+              <input type="checkbox" id="formFeatured">
+              <span class="form-label" style="margin:0;">Highlight as Featured Product on Storefront</span>
+            </label>
+          </div>
+
+          <div class="modal-footer" style="padding:0; border:none; margin-top:1.5rem;">
+            <button type="button" class="btn btn-secondary" id="cancelProductBtn">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="saveProductBtn">Save to Firestore</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== VIEW ORDER DETAILS MODAL ==================== -->
+  <div class="modal-overlay" id="adminOrderDetailsModalOverlay">
+    <div class="modal-container" style="max-width: 650px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="adminOrderDetailsTitle">Order Details</h3>
+        <button class="modal-close-btn" id="closeAdminOrderDetailsBtn">✕</button>
+      </div>
+      <div class="modal-body" id="adminOrderDetailsBody">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== LIVE EMAIL DISPATCH NOTIFICATION MODAL ==================== -->
+  <div class="modal-overlay" id="adminEmailDispatchModalOverlay">
+    <div class="modal-container" style="max-width: 660px;">
+      <div class="modal-header"
+        style="background: linear-gradient(135deg, #090d16 0%, #1e1b4b 60%, #31104b 100%); color: white; border-bottom: 2px solid var(--primary);">
+        <div style="display:flex; align-items:center; gap:0.6rem;">
+          <span style="font-size:1.4rem;">✉️</span>
+          <div>
+            <h3 class="modal-title" style="color:white; font-size:1.15rem; font-weight:800;">AURA Store — Order Status
+              Email Dialog</h3>
+            <span style="font-size:0.75rem; color:#c7d2fe;">Official Customer Status & Invoice Dispatch</span>
+          </div>
+        </div>
+        <button class="modal-close-btn" style="color:white;" id="closeAdminEmailModalBtn">✕</button>
+      </div>
+
+      <div class="modal-body" style="padding: 1.5rem;">
+        <!-- Recipient & Meta Bar -->
+        <div
+          style="background: var(--bg-card); border: 1px solid var(--glass-border); border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1rem;">
+          <div
+            style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem; font-size:0.85rem;">
+            <span><strong>Customer Email:</strong> <span id="emailModalRecipient"
+                style="color:var(--primary); font-weight:700;"></span></span>
+            <span class="status-badge" id="emailModalStatusBadge"></span>
+          </div>
+          <div style="font-size:0.85rem;">
+            <strong>Subject:</strong> <span id="emailModalSubject" style="color:var(--text-secondary);"></span>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+          <span style="font-size:0.8rem; font-weight:700; color:var(--text-muted); text-transform:uppercase;">
+            ✨ Visual Email Design Preview:
+          </span>
+          <span style="font-size:0.75rem; color:var(--accent);">Exact layout sent to customer</span>
+        </div>
+
+        <!-- Full HTML Email Preview -->
+        <div id="emailModalPreviewContainer"
+          style="background: #090d16; border-radius: 12px; max-height: 380px; overflow-y: auto; padding: 8px; border: 1px solid var(--glass-border); box-shadow: inset 0 2px 8px rgba(0,0,0,0.5);">
+          <!-- Live HTML email preview rendered here -->
+        </div>
+
+        <!-- Action Buttons Bar: Copy, Open Gmail, Default Mail, Close -->
+        <div style="display:grid; grid-template-columns: 1fr 1.2fr auto auto; gap:0.6rem; margin-top:1.25rem;">
+          <button type="button" id="emailModalCopyTemplateBtn" class="btn btn-secondary"
+            style="justify-content:center; gap:0.4rem; font-weight:700;">
+            <span>📋 Copy Template</span>
+          </button>
+
+          <a href="#" id="emailModalGmailWebBtn" target="_blank" rel="noopener noreferrer" class="btn btn-primary"
+            style="text-decoration:none; justify-content:center; gap:0.4rem; background: linear-gradient(135deg, #ea4335, #db4437); border: none; font-weight:700;">
+            <span>🔴 Send via Gmail</span>
+          </a>
+
+          <a href="#" id="emailModalOpenMailtoBtn" target="_blank" class="btn btn-outline"
+            style="text-decoration:none; justify-content:center; gap:0.4rem;" title="Open Default Mail Application">
+            <span>✉️</span>
+          </a>
+
+          <button type="button" class="btn btn-secondary" id="emailModalDoneBtn" style="min-width:65px;">
+            Close
+          </button>
+        </div>
+
+        <div
+          style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: var(--radius-sm); padding: 0.6rem 0.85rem; margin-top: 0.85rem; font-size: 0.78rem; color: var(--text-secondary); display: flex; align-items: center; gap: 0.5rem;">
+          <span style="font-size: 1rem;">💡</span>
+          <span><strong>Quick Tip:</strong> Click <em>"Copy Template"</em> then click <em>"Send via Gmail"</em> and
+            press <strong>Ctrl + V</strong> in Gmail to send this exact visual design!</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== LIVE CAMERA PHOTO CAPTURE MODAL ==================== -->
+  <div class="modal-overlay" id="adminCameraModalOverlay">
+    <div class="modal-container" style="max-width: 520px; text-align: center;">
+      <div class="modal-header">
+        <h3 class="modal-title">📸 Live Camera Photo Capture</h3>
+        <button class="modal-close-btn" id="closeCameraModalBtn">✕</button>
+      </div>
+      <div class="modal-body" style="padding: 1.5rem;">
+        <div
+          style="position:relative; width:100%; aspect-ratio:4/3; background:#000; border-radius:var(--radius-md); overflow:hidden; margin-bottom:1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
+          <video id="adminCameraVideo" autoplay playsinline style="width:100%; height:100%; object-fit:cover;"></video>
+          <canvas id="adminCameraCanvas" style="display:none;"></canvas>
+          <div id="cameraLoadingNotice"
+            style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:white; font-size:0.9rem; background:rgba(0,0,0,0.7);">
+            <span>Connecting device camera...</span>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:0.75rem; justify-content:center;">
+          <button type="button" class="btn btn-primary btn-lg" id="cameraSnapPhotoBtn"
+            style="flex:1; justify-content:center; gap:0.5rem;">
+            <span>📸 Snap & Add Photo</span>
+          </button>
+          <button type="button" class="btn btn-secondary" id="cameraCancelBtn">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== ADMIN SECURITY GATE / AUTH LOCK ==================== -->
+  <div class="modal-overlay" id="adminAuthGateOverlay" style="background: rgba(11, 15, 25, 0.95); z-index: 9999;">
+    <div class="modal-container"
+      style="max-width: 480px; text-align: center; border: 1px solid rgba(99, 102, 241, 0.3);">
+
+      <!-- State 1: Admin Login Required -->
+      <div id="gateLoginFormContainer" style="padding: 2.5rem 2rem;">
+        <div
+          style="width: 60px; height: 60px; border-radius: 16px; background: var(--primary-light); color: var(--primary); display:flex; align-items:center; justify-content:center; margin: 0 auto 1.25rem; font-size: 1.5rem; box-shadow: var(--shadow-glow);">
+          🔒
+        </div>
+        <h2 style="font-size: 1.6rem; margin-bottom: 0.5rem;">Admin Portal Access</h2>
+        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.75rem;">
+          This management portal is restricted. Please authenticate with administrator credentials to proceed.
+        </p>
+
+        <form id="gateLoginForm" style="text-align: left;">
+          <div class="form-group">
+            <label class="form-label" for="gateAdminEmail">Admin Email</label>
+            <input type="email" id="gateAdminEmail" class="form-input" placeholder="admin@gmail.com" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="gateAdminPassword">Admin Password</label>
+            <input type="password" id="gateAdminPassword" class="form-input" placeholder="••••••••" required>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;"
+            id="gateLoginSubmitBtn">
+            Unlock Admin Dashboard
+          </button>
+        </form>
+
+        <div style="margin-top: 1.5rem; border-top: 1px solid var(--glass-border); padding-top: 1rem;">
+          <a href="../index.html" class="btn btn-secondary btn-sm" style="width: 100%;">
+            ← Return to Customer Storefront
+          </a>
+        </div>
+      </div>
+
+      <!-- State 2: Access Denied (Logged in as normal customer) -->
+      <div id="gateAccessDeniedContainer" style="display:none; padding: 2.5rem 2rem;">
+        <div
+          style="width: 60px; height: 60px; border-radius: 16px; background: var(--danger-bg); color: var(--danger); display:flex; align-items:center; justify-content:center; margin: 0 auto 1.25rem; font-size: 1.75rem;">
+          🚫
+        </div>
+        <h2 style="font-size: 1.6rem; margin-bottom: 0.5rem; color: var(--danger);">Access Restricted</h2>
+        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.5rem;" id="gateAccessDeniedMessage">
+          Your current account does not have administrator privileges to access this console.
+        </p>
+
+        <div style="display:flex; flex-direction:column; gap:0.75rem;">
+          <button class="btn btn-secondary" id="gateSwitchAccountBtn">
+            Sign In with Different Account
+          </button>
+          <a href="../index.html" class="btn btn-primary">
+            Back to Customer Store
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- GSAP Core & ScrollTrigger CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+  <!-- Admin Controller Module (Dual Path: Root-Absolute and Relative) -->
+  <script type="module" src="/admin/js/admin.js"></script>
+  <script type="module">
+    if (!window.adminOpenAddProduct) {
+      import("./js/admin.js").catch(() => { });
+    }
+  </script>
+</body>
+
+</html>
