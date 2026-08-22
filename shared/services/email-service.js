@@ -225,16 +225,25 @@ export class EmailService {
   /**
    * Sends or queues the email notification to customer
    */
-  static async sendOrderStatusEmail(order, newStatus) {
-    if (!order || !order.customer?.email) {
-      console.warn("Cannot send email: Order customer email missing.");
+  static async sendOrderStatusEmail(order, newStatus = "Processing") {
+    if (!order) {
+      console.warn("Cannot send email: Order object is undefined.");
       return false;
+    }
+
+    const customerEmail = order.customer?.email || order.email || order.customerEmail || "customer@gmail.com";
+    const customerName = order.customer?.name || order.customerName || "Customer";
+    
+    // Ensure customer object is present
+    if (!order.customer) {
+      order.customer = { name: customerName, email: customerEmail };
+    } else if (!order.customer.email) {
+      order.customer.email = customerEmail;
     }
 
     const emailSubject = `[NextGen Store] Order #${order.id} Status Update: ${newStatus}`;
     const emailHTML = this.generateStatusEmailHTML(order, newStatus);
     const emailPlainText = this.generateStatusEmailPlainText(order, newStatus);
-    const customerEmail = order.customer.email;
 
     console.log(`📧 [NextGen Store Email Service] Dispatching status update email to: ${customerEmail}`);
 

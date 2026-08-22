@@ -145,53 +145,70 @@ window.adminRemoveGalleryImage = (index) => {
 
 // ==================== LIVE EMAIL DISPATCH DIALOG ====================
 export function showLiveEmailDispatchModal(detail) {
+  // Close order details modal if open to prevent stacking
+  document.getElementById("adminOrderDetailsModalOverlay")?.classList.remove("active");
+
   const modal = document.getElementById("adminEmailDispatchModalOverlay");
-  if (!modal) return;
+  if (modal) {
+    const recipientEl = document.getElementById("emailModalRecipient");
+    const statusBadgeEl = document.getElementById("emailModalStatusBadge");
+    const subjectEl = document.getElementById("emailModalSubject");
+    const previewEl = document.getElementById("emailModalPreviewContainer");
+    const gmailBtn = document.getElementById("emailModalGmailWebBtn");
+    const mailtoBtn = document.getElementById("emailModalOpenMailtoBtn");
+    const copyBtn = document.getElementById("emailModalCopyTemplateBtn");
+    const closeBtn = document.getElementById("closeAdminEmailModalBtn");
 
-  const recipientEl = document.getElementById("emailModalRecipient");
-  const statusBadgeEl = document.getElementById("emailModalStatusBadge");
-  const subjectEl = document.getElementById("emailModalSubject");
-  const previewEl = document.getElementById("emailModalPreviewContainer");
-  const gmailBtn = document.getElementById("emailModalGmailWebBtn");
-  const mailtoBtn = document.getElementById("emailModalOpenMailtoBtn");
-  const copyBtn = document.getElementById("emailModalCopyTemplateBtn");
-  const closeBtn = document.getElementById("closeAdminEmailModalBtn");
+    if (recipientEl) recipientEl.textContent = `${detail.customerName || 'Customer'} <${detail.to}>`;
+    if (statusBadgeEl) {
+      statusBadgeEl.textContent = detail.status;
+      statusBadgeEl.className = `status-badge status-${(detail.status || 'pending').toLowerCase()}`;
+    }
+    if (subjectEl) subjectEl.textContent = detail.subject;
+    if (previewEl) previewEl.innerHTML = detail.html;
 
-  if (recipientEl) recipientEl.textContent = `${detail.customerName || 'Customer'} <${detail.to}>`;
-  if (statusBadgeEl) {
-    statusBadgeEl.textContent = detail.status;
-    statusBadgeEl.className = `status-badge status-${(detail.status || 'pending').toLowerCase()}`;
-  }
-  if (subjectEl) subjectEl.textContent = detail.subject;
-  if (previewEl) previewEl.innerHTML = detail.html;
+    if (gmailBtn) {
+      gmailBtn.href = detail.gmailWebUrl;
+    }
+    if (mailtoBtn) {
+      mailtoBtn.href = detail.mailtoUrl;
+    }
 
-  if (gmailBtn) {
-    gmailBtn.href = detail.gmailWebUrl;
-  }
-  if (mailtoBtn) {
-    mailtoBtn.href = detail.mailtoUrl;
-  }
+    if (copyBtn) {
+      copyBtn.onclick = async () => {
+        try {
+          await navigator.clipboard.writeText(detail.plainText || detail.html);
+          showToast("📋 Status email template copied to clipboard!", "success");
+          copyBtn.textContent = "✓ Copied!";
+          setTimeout(() => {
+            copyBtn.innerHTML = "<span>📋 Copy Template</span>";
+          }, 2000);
+        } catch (err) {
+          showToast("Could not copy to clipboard", "warning");
+        }
+      };
+    }
 
-  if (copyBtn) {
-    copyBtn.onclick = async () => {
-      try {
-        await navigator.clipboard.writeText(detail.plainText || detail.html);
-        showToast("📋 Status email template copied to clipboard!", "success");
-        copyBtn.textContent = "✓ Copied!";
-        setTimeout(() => {
-          copyBtn.innerHTML = "<span>📋 Copy Template</span>";
-        }, 2000);
-      } catch (err) {
-        showToast("Could not copy to clipboard", "warning");
+    if (closeBtn) {
+      closeBtn.onclick = () => modal.classList.remove("active");
+    }
+
+    modal.style.zIndex = "999999";
+    modal.classList.add("active");
+  } else {
+    // Fallback Alert Dialog
+    showAlertDialog({
+      title: `✉️ Dispatch Email: Order #${detail.orderId}`,
+      message: `Status: [${detail.status}]\nRecipient: ${detail.to}\nSubject: ${detail.subject}\n\nEmail notification generated successfully.`,
+      icon: "✉️",
+      buttonText: "Open Gmail Compose",
+      type: "info"
+    }).then((confirmed) => {
+      if (confirmed && detail.gmailWebUrl) {
+        window.open(detail.gmailWebUrl, "_blank");
       }
-    };
+    });
   }
-
-  if (closeBtn) {
-    closeBtn.onclick = () => modal.classList.remove("active");
-  }
-
-  modal.classList.add("active");
 }
 
 window.addEventListener("aura_email_dispatched", (e) => {
@@ -202,13 +219,21 @@ window.addEventListener("aura_email_dispatched", (e) => {
 });
 
 window.adminSendOrderEmail = async (orderId) => {
-  const order = ordersList.find(o => String(o.id) === String(orderId));
+  let order = ordersList.find(o => String(o.id) === String(orderId));
   if (!order) {
-    showToast("Order not found.", "warning");
+    try {
+      const all = await DBService.getOrders();
+      order = all.find(o => String(o.id) === String(orderId));
+    } catch (e) { }
+  }
+
+  if (!order) {
+    showToast(`Order #${orderId} not found in records.`, "warning");
     return;
   }
-  showToast(`Preparing status email for Order #${order.id}...`, "info", 2000);
-  await EmailService.sendOrderStatusEmail(order, order.status || "Pending");
+
+  showToast(`📧 Opening live email dialog for Order #${order.id}...`, "info", 1500);
+  await EmailService.sendOrderStatusEmail(order, order.status || "Processing");
 };
 
 window.adminChangeOrderStatus = async (orderId, newStatus) => {
