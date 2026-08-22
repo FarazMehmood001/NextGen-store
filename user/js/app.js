@@ -33,6 +33,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   initFlashCountdownTimer();
   initLiveActivityTicker();
   await loadAnnouncementTicker();
+  await loadPromoBanner();
   setupFAQAccordion();
 
   // Initialize Cart
@@ -190,13 +191,79 @@ async function loadAnnouncementTicker() {
   }
 }
 
+// ==================== PROMOTIONAL DISCOUNT BANNER (ADMIN CONTROLLED) ====================
+async function loadPromoBanner() {
+  const promoSection = document.getElementById("promoDiscountSection");
+  const badgeEl = document.getElementById("promoDiscountBadge");
+  const titleEl = document.getElementById("promoDiscountTitle");
+  const descEl = document.getElementById("promoDiscountDesc");
+  const codeEl = document.getElementById("promoDiscountCode");
+  const btnEl = document.getElementById("promoDiscountBtn");
+  const copyBtn = document.getElementById("promoCopyCouponBtn");
+  const copyText = document.getElementById("promoCopyCodeText");
+
+  if (!promoSection) return;
+
+  try {
+    const data = await DBService.getPromoBanner();
+    if (data && data.enabled) {
+      if (badgeEl) {
+        badgeEl.textContent = data.badge || "🔥 Exclusive Limited Time Offer";
+        badgeEl.style.display = data.badge ? "inline-block" : "none";
+      }
+
+      if (titleEl) titleEl.textContent = data.title || "Unlock 10% Off Your Entire Cart";
+      
+      const code = data.couponCode || "AURA10";
+      if (codeEl) codeEl.textContent = code;
+      if (copyText) copyText.textContent = code;
+
+      if (descEl) {
+        descEl.innerHTML = `Use coupon code <strong id="promoDiscountCode" style="background: rgba(15, 23, 42, 0.9); padding: 0.3rem 0.8rem; border-radius: 8px; border: 1px solid rgba(249, 115, 22, 0.5); color: var(--color-orange); font-size:1.1rem;">${code}</strong> during checkout for instant savings.`;
+      }
+
+      if (btnEl && data.buttonText) {
+        btnEl.textContent = data.buttonText;
+      }
+
+      if (copyBtn) {
+        copyBtn.onclick = async () => {
+          try {
+            await navigator.clipboard.writeText(code);
+            showToast(`🎉 Coupon code "${code}" copied! Paste at checkout.`, "success");
+            copyBtn.textContent = `✓ Copied: ${code}`;
+            setTimeout(() => {
+              copyBtn.innerHTML = `📋 Copy Code: <span id="promoCopyCodeText">${code}</span>`;
+            }, 2500);
+          } catch (err) {
+            showToast(`Coupon: ${code}`, "info");
+          }
+        };
+      }
+
+      promoSection.style.display = "block";
+    } else {
+      promoSection.style.display = "none";
+    }
+  } catch (err) {
+    console.warn("Failed to load promo banner:", err);
+    promoSection.style.display = "none";
+  }
+}
+
 // Listen for admin changes in real time across tabs and events
 window.addEventListener("aura_announcement_changed", () => {
   loadAnnouncementTicker();
 });
+window.addEventListener("aura_promo_banner_changed", () => {
+  loadPromoBanner();
+});
 window.addEventListener("storage", (e) => {
   if (e.key === "aura_announcement_cache") {
     loadAnnouncementTicker();
+  }
+  if (e.key === "aura_promo_banner_cache") {
+    loadPromoBanner();
   }
 });
 

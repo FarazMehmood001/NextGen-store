@@ -670,6 +670,7 @@ async function refreshAllData({ showBanner = false, silent = false } = {}) {
 
     try {
       await loadAnnouncementAdminSettings();
+      await loadPromoBannerAdminSettings();
     } catch (e) { }
 
     if (shouldShowBanner) {
@@ -1027,6 +1028,92 @@ function updateLivePreviewUI() {
   }
 }
 
+// ==================== PROMOTIONAL DISCOUNT BANNER ADMIN SYSTEM ====================
+let currentPromoBannerData = {
+  enabled: false,
+  badge: "🔥 Exclusive Limited Time Offer",
+  title: "Unlock 10% Off Your Entire Cart",
+  description: "Use coupon code AURA10 during checkout for instant savings.",
+  couponCode: "AURA10",
+  buttonText: "Start Shopping Now"
+};
+
+async function loadPromoBannerAdminSettings() {
+  try {
+    const data = await DBService.getPromoBanner();
+    if (data) {
+      currentPromoBannerData = { ...currentPromoBannerData, ...data };
+    }
+    populatePromoBannerForm();
+    updatePromoLivePreviewUI();
+  } catch (err) {
+    console.warn("Failed to load promo banner admin settings:", err);
+  }
+}
+
+function populatePromoBannerForm() {
+  const toggle = document.getElementById("promoBannerEnabledToggle");
+  const badgeInput = document.getElementById("promoBannerBadgeInput");
+  const couponInput = document.getElementById("promoBannerCouponInput");
+  const titleInput = document.getElementById("promoBannerTitleInput");
+  const descInput = document.getElementById("promoBannerDescInput");
+  const btnTextInput = document.getElementById("promoBannerBtnTextInput");
+
+  if (toggle) toggle.checked = Boolean(currentPromoBannerData.enabled);
+  if (badgeInput) badgeInput.value = currentPromoBannerData.badge || "";
+  if (couponInput) couponInput.value = currentPromoBannerData.couponCode || "AURA10";
+  if (titleInput) titleInput.value = currentPromoBannerData.title || "";
+  if (descInput) descInput.value = currentPromoBannerData.description || "";
+  if (btnTextInput) btnTextInput.value = currentPromoBannerData.buttonText || "Start Shopping Now";
+}
+
+function updatePromoLivePreviewUI() {
+  const toggle = document.getElementById("promoBannerEnabledToggle");
+  const badgeInput = document.getElementById("promoBannerBadgeInput");
+  const couponInput = document.getElementById("promoBannerCouponInput");
+  const titleInput = document.getElementById("promoBannerTitleInput");
+  const descInput = document.getElementById("promoBannerDescInput");
+  const btnTextInput = document.getElementById("promoBannerBtnTextInput");
+
+  const previewBox = document.getElementById("adminPromoLivePreview");
+  const previewBadge = document.getElementById("adminPromoPreviewBadge");
+  const previewTitle = document.getElementById("adminPromoPreviewTitle");
+  const previewDesc = document.getElementById("adminPromoPreviewDesc");
+  const previewBtn = document.getElementById("adminPromoPreviewBtn");
+
+  const isEnabled = toggle ? toggle.checked : false;
+  const badgeText = badgeInput?.value.trim() || "";
+  const couponCode = couponInput?.value.trim().toUpperCase() || "AURA10";
+  const titleText = titleInput?.value.trim() || "Unlock 10% Off Your Entire Cart";
+  const descText = descInput?.value.trim() || `Use coupon code ${couponCode} during checkout for instant savings.`;
+  const btnText = btnTextInput?.value.trim() || "Start Shopping Now";
+
+  if (previewBadge) {
+    if (badgeText) {
+      previewBadge.textContent = badgeText;
+      previewBadge.style.display = "inline-block";
+    } else {
+      previewBadge.style.display = "none";
+    }
+  }
+
+  if (previewTitle) previewTitle.textContent = titleText;
+  if (previewDesc) {
+    previewDesc.innerHTML = `Use coupon code <strong style="background: rgba(15, 23, 42, 0.9); padding: 0.2rem 0.6rem; border-radius: 6px; border: 1px solid rgba(249, 115, 22, 0.5); color: var(--color-orange); font-size:0.95rem;">${couponCode}</strong> during checkout for instant savings.`;
+  }
+  if (previewBtn) previewBtn.textContent = btnText;
+
+  if (previewBox) {
+    if (!isEnabled) {
+      previewBox.style.opacity = "0.45";
+      previewBox.style.filter = "grayscale(0.7)";
+    } else {
+      previewBox.style.opacity = "1";
+      previewBox.style.filter = "none";
+    }
+  }
+}
+
 // ==================== EVENT LISTENERS SETUP ====================
 function setupEventListeners() {
   // Topbar and Section Header Add Product Buttons
@@ -1279,6 +1366,75 @@ function setupEventListeners() {
       showToast("🚫 Announcement ticker has been disabled and hidden from store.", "info");
     } catch (err) {
       showToast("Error updating announcement: " + err.message, "error");
+    }
+  });
+
+  // Promotional Discount Banner Live Controls & Form Submit
+  const promoEnabledToggle = document.getElementById("promoBannerEnabledToggle");
+  const promoBadgeInput = document.getElementById("promoBannerBadgeInput");
+  const promoCouponInput = document.getElementById("promoBannerCouponInput");
+  const promoTitleInput = document.getElementById("promoBannerTitleInput");
+  const promoDescInput = document.getElementById("promoBannerDescInput");
+  const promoBtnTextInput = document.getElementById("promoBannerBtnTextInput");
+  const adminPromoBannerForm = document.getElementById("adminPromoBannerForm");
+  const promoBannerTurnOffBtn = document.getElementById("promoBannerTurnOffBtn");
+
+  promoEnabledToggle?.addEventListener("change", () => updatePromoLivePreviewUI());
+  promoBadgeInput?.addEventListener("input", () => updatePromoLivePreviewUI());
+  promoCouponInput?.addEventListener("input", () => updatePromoLivePreviewUI());
+  promoTitleInput?.addEventListener("input", () => updatePromoLivePreviewUI());
+  promoDescInput?.addEventListener("input", () => updatePromoLivePreviewUI());
+  promoBtnTextInput?.addEventListener("input", () => updatePromoLivePreviewUI());
+
+  adminPromoBannerForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const saveBtn = document.getElementById("promoBannerSaveBtn");
+    if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = "Publishing Promo Banner..."; }
+
+    try {
+      const payload = {
+        enabled: Boolean(promoEnabledToggle?.checked),
+        badge: promoBadgeInput?.value.trim() || "",
+        couponCode: (promoCouponInput?.value || "AURA10").trim().toUpperCase(),
+        title: promoTitleInput?.value.trim() || "",
+        description: promoDescInput?.value.trim() || "",
+        buttonText: promoBtnTextInput?.value.trim() || "Start Shopping Now"
+      };
+
+      await DBService.savePromoBanner(payload);
+      currentPromoBannerData = { ...payload };
+      updatePromoLivePreviewUI();
+
+      if (payload.enabled) {
+        showToast("🎉 Promotional Discount Banner published and live on storefront!", "success");
+      } else {
+        showToast("Promotional Banner saved (currently hidden/disabled).", "info");
+      }
+    } catch (err) {
+      showToast("Failed to save promo banner: " + err.message, "error");
+    } finally {
+      if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = "💾 Save & Publish Promo Banner"; }
+    }
+  });
+
+  promoBannerTurnOffBtn?.addEventListener("click", async () => {
+    if (promoEnabledToggle) promoEnabledToggle.checked = false;
+    updatePromoLivePreviewUI();
+
+    try {
+      const payload = {
+        enabled: false,
+        badge: promoBadgeInput?.value.trim() || "",
+        couponCode: (promoCouponInput?.value || "AURA10").trim().toUpperCase(),
+        title: promoTitleInput?.value.trim() || "",
+        description: promoDescInput?.value.trim() || "",
+        buttonText: promoBtnTextInput?.value.trim() || "Start Shopping Now"
+      };
+      await DBService.savePromoBanner(payload);
+      currentPromoBannerData = { ...payload };
+      showToast("🚫 Promotional discount banner has been disabled and hidden from store.", "info");
+    } catch (err) {
+      showToast("Error updating promo banner: " + err.message, "error");
     }
   });
 

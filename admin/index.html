@@ -85,7 +85,7 @@
             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
             <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
           </svg>
-          <span>Announcement Bar</span>
+          <span>Marketing & Banners</span>
         </div>
 
         <a href="../index.html" target="_blank" rel="noopener noreferrer" class="sidebar-link"
@@ -398,6 +398,108 @@
                 </button>
                 <button type="submit" class="btn btn-primary" id="announcementSaveBtn" style="padding:0.7rem 1.75rem;">
                   💾 Save & Publish Announcement
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- ==================== PROMOTIONAL DISCOUNT BANNER MANAGEMENT ==================== -->
+          <div class="admin-card" style="margin-top: 2rem;">
+            <div class="admin-card-header">
+              <div>
+                <h3 class="admin-card-title">
+                  <span>🎁 Promotional Discount Banner (Storefront Offer)</span>
+                </h3>
+                <p style="color:var(--text-secondary); font-size:0.85rem; margin-top:0.25rem;">
+                  Control the big highlighted discount & coupon section displayed across the main storefront.
+                </p>
+              </div>
+            </div>
+
+            <!-- Real-time Live Preview Card -->
+            <div style="margin-bottom:1.5rem; background:var(--bg-elevated); border:1px solid var(--glass-border); border-radius:var(--radius-lg); padding:1.5rem;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+                <h4 style="font-size:0.9rem; font-weight:700; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.04em;">
+                  👁️ Real-Time Storefront Banner Preview
+                </h4>
+                <span style="font-size:0.75rem; color:var(--text-muted);">Exact visual appearance on homepage</span>
+              </div>
+
+              <div id="adminPromoLivePreview"
+                style="background: linear-gradient(135deg, rgba(249, 115, 22, 0.14) 0%, rgba(244, 63, 94, 0.14) 50%, rgba(139, 92, 246, 0.14) 100%); border: 1px solid rgba(249, 115, 22, 0.3); border-radius:12px; padding: 1.75rem; text-align: center;">
+                <div id="adminPromoPreviewBadge"
+                  style="display:inline-block; margin-bottom:0.75rem; background:rgba(249,115,22,0.18); color:var(--color-orange); border:1px solid rgba(249,115,22,0.4); padding:3px 12px; border-radius:20px; font-size:0.8rem; font-weight:800;">
+                  🔥 Exclusive Limited Time Offer
+                </div>
+                <h3 id="adminPromoPreviewTitle" style="font-size: 1.6rem; font-weight:800; margin-bottom: 0.5rem; color:#f8fafc;">
+                  Unlock 10% Off Your Entire Cart
+                </h3>
+                <p id="adminPromoPreviewDesc" style="color: var(--text-secondary); margin-bottom: 1.25rem; font-size:0.92rem;">
+                  Use coupon code <strong id="adminPromoPreviewCode" style="background: rgba(15, 23, 42, 0.9); padding: 0.2rem 0.6rem; border-radius: 6px; border: 1px solid rgba(249, 115, 22, 0.5); color: var(--color-orange); font-size:0.95rem;">AURA10</strong> during checkout for instant savings.
+                </p>
+                <div style="display:flex; gap:0.6rem; justify-content:center; flex-wrap:wrap;">
+                  <button type="button" class="btn btn-primary btn-sm" id="adminPromoPreviewBtn" style="background: var(--grad-sunset); border:none; pointer-events:none;">
+                    Start Shopping Now
+                  </button>
+                  <button type="button" class="btn btn-secondary btn-sm" style="font-weight:800; pointer-events:none;">
+                    📋 Copy Code
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Configuration Form -->
+            <form id="adminPromoBannerForm">
+              <div class="form-group"
+                style="background:var(--bg-elevated); padding:1rem 1.25rem; border-radius:var(--radius-md); border:1px solid var(--glass-border); display:flex; align-items:center; justify-content:space-between;">
+                <div>
+                  <strong style="display:block; font-size:0.95rem; color:var(--text-primary);">Enable Promotional Discount Banner</strong>
+                  <span style="font-size:0.8rem; color:var(--text-secondary);">When switched OFF, this banner is completely removed from the storefront.</span>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="promoBannerEnabledToggle">
+                  <span class="switch-slider" id="promoToggleSliderSpan"></span>
+                </label>
+              </div>
+
+              <div class="form-grid-2" style="margin-top:1.25rem;">
+                <div class="form-group">
+                  <label class="form-label" for="promoBannerBadgeInput">Offer Badge Tag</label>
+                  <input type="text" id="promoBannerBadgeInput" class="form-input"
+                    placeholder="e.g. 🔥 Exclusive Limited Time Offer" value="🔥 Exclusive Limited Time Offer">
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="promoBannerCouponInput">Coupon Code (Uppercase)</label>
+                  <input type="text" id="promoBannerCouponInput" class="form-input"
+                    placeholder="e.g. AURA10 or NEXTGEN20" value="AURA10" style="text-transform:uppercase; font-weight:800; letter-spacing:1px;">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="promoBannerTitleInput">Main Offer Headline *</label>
+                <input type="text" id="promoBannerTitleInput" class="form-input"
+                  placeholder="e.g. Unlock 10% Off Your Entire Cart" value="Unlock 10% Off Your Entire Cart" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="promoBannerDescInput">Offer Description & Details *</label>
+                <textarea id="promoBannerDescInput" class="form-input" rows="2"
+                  placeholder="Use coupon code AURA10 during checkout for instant savings." required>Use coupon code AURA10 during checkout for instant savings.</textarea>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="promoBannerBtnTextInput">Call to Action Button Text</label>
+                <input type="text" id="promoBannerBtnTextInput" class="form-input"
+                  placeholder="e.g. Start Shopping Now" value="Start Shopping Now">
+              </div>
+
+              <div style="display:flex; gap:1rem; align-items:center; margin-top:1.5rem; justify-content:flex-end;">
+                <button type="button" class="btn btn-secondary" id="promoBannerTurnOffBtn">
+                  🚫 Disable & Hide Banner
+                </button>
+                <button type="submit" class="btn btn-primary" id="promoBannerSaveBtn" style="padding:0.7rem 1.75rem;">
+                  💾 Save & Publish Promo Banner
                 </button>
               </div>
             </form>

@@ -576,8 +576,69 @@ export class DBService {
       localStorage.setItem(LOCAL_ANNOUNCEMENT_KEY, JSON.stringify(payload));
     } catch (e) { }
 
-    window.dispatchEvent(new CustomEvent("aura_announcement_changed", { detail: payload }));
-    return payload;
+  // ==================== PROMOTIONAL DISCOUNT BANNER SETTINGS ====================
+  static async getPromoBanner() {
+    const LOCAL_PROMO_KEY = "aura_promo_banner_cache";
+    let localData = null;
+    try {
+      const raw = localStorage.getItem(LOCAL_PROMO_KEY);
+      if (raw) localData = JSON.parse(raw);
+    } catch (e) { }
+
+    if (isFirebaseConnected && db) {
+      try {
+        const docRef = doc(db, "settings", "promo_banner");
+        const snap = await getDoc(docRef);
+        if (snap.exists()) {
+          const cloudData = snap.data();
+          saveLocalItems(LOCAL_PROMO_KEY, cloudData);
+          return cloudData;
+        }
+      } catch (e) {
+        console.warn("Firestore promo banner fetch error:", e);
+      }
+    }
+
+    if (localData) return localData;
+
+    return {
+      enabled: false,
+      badge: "🔥 Exclusive Limited Time Offer",
+      title: "Unlock 10% Off Your Entire Cart",
+      description: "Use coupon code AURA10 during checkout for instant savings.",
+      couponCode: "AURA10",
+      buttonText: "Start Shopping Now",
+      updatedAt: new Date().toISOString()
+    };
+  }
+
+  static async savePromoBanner(promoData) {
+    const LOCAL_PROMO_KEY = "aura_promo_banner_cache";
+    const cleanData = {
+      enabled: Boolean(promoData.enabled),
+      badge: (promoData.badge || "").trim(),
+      title: (promoData.title || "").trim(),
+      description: (promoData.description || "").trim(),
+      couponCode: (promoData.couponCode || "AURA10").trim().toUpperCase(),
+      buttonText: (promoData.buttonText || "Start Shopping Now").trim(),
+      updatedAt: new Date().toISOString()
+    };
+
+    if (isFirebaseConnected && db) {
+      try {
+        await setDoc(doc(db, "settings", "promo_banner"), cleanData, { merge: true });
+        console.log("✅ Promo banner settings saved to Firestore");
+      } catch (e) {
+        console.warn("Firestore promo banner save error:", e);
+      }
+    }
+
+    try {
+      localStorage.setItem(LOCAL_PROMO_KEY, JSON.stringify(cleanData));
+    } catch (e) { }
+
+    window.dispatchEvent(new CustomEvent("aura_promo_banner_changed", { detail: cleanData }));
+    return cleanData;
   }
 }
 
