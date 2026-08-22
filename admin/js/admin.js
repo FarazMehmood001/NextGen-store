@@ -2038,27 +2038,10 @@ function setupEventListeners() {
 function setupAdminAuthGuard() {
   const adminSignOutBtn = document.getElementById("adminSignOutBtn");
   const gateModal = document.getElementById("adminAuthGateOverlay");
-  const gateDeniedContainer = document.getElementById("gateAccessDeniedContainer");
-  const gateLoginContainer = document.getElementById("gateLoginFormContainer");
 
   AuthService.onAuthStateChange(async (user) => {
-    if (!user) {
-      // Show Gate Login Modal
-      if (gateModal) {
-        gateModal.classList.add("active");
-        if (gateLoginContainer) gateLoginContainer.style.display = "block";
-        if (gateDeniedContainer) gateDeniedContainer.style.display = "none";
-      }
-      return;
-    }
-
-    if (!user.isAdmin) {
-      // Show Access Denied State in Gate
-      if (gateModal) {
-        gateModal.classList.add("active");
-        if (gateLoginContainer) gateLoginContainer.style.display = "none";
-        if (gateDeniedContainer) gateDeniedContainer.style.display = "block";
-      }
+    if (!user || !user.isAdmin) {
+      window.location.replace("./login.html");
       return;
     }
 

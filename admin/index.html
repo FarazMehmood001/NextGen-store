@@ -28,6 +28,25 @@
       }
     })();
   </script>
+
+  <!-- Instant Admin Auth Guard (Enforce login before dashboard access) -->
+  <script>
+    (function () {
+      try {
+        const rawUser = localStorage.getItem("aura_current_user");
+        if (!rawUser) {
+          window.location.replace("./login.html");
+          return;
+        }
+        const user = JSON.parse(rawUser);
+        if (!user || !user.isAdmin) {
+          window.location.replace("./login.html");
+        }
+      } catch (e) {
+        window.location.replace("./login.html");
+      }
+    })();
+  </script>
 </head>
 
 <body>
