@@ -377,7 +377,63 @@ function setupNavigation() {
   });
 }
 
-// ==================== SKELETON LOADING SYSTEM ====================
+// ==================== SKELETON LOADING & SYNC SYSTEM ====================
+function updateSyncStatusBanner(isSyncing, message = "") {
+  let banner = document.getElementById("adminSyncStatusFloatingBanner");
+  if (!banner) {
+    banner = document.createElement("div");
+    banner.id = "adminSyncStatusFloatingBanner";
+    banner.style.cssText = `
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 99999;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      border-radius: 50px;
+      padding: 0.65rem 1.35rem;
+      color: #ffffff;
+      font-size: 0.86rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      box-shadow: 0 10px 35px rgba(0,0,0,0.6), 0 0 25px rgba(56, 189, 248, 0.25);
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      transform: translateY(100px);
+      opacity: 0;
+      pointer-events: none;
+    `;
+    document.body.appendChild(banner);
+  }
+
+  if (isSyncing) {
+    banner.innerHTML = `
+      <svg style="animation: spin 1s linear infinite; color:#38bdf8;" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+      </svg>
+      <span>${message || '⚡ Connecting to Cloud Firestore... Fetching live store data'}</span>
+    `;
+    banner.style.transform = "translateY(0)";
+    banner.style.opacity = "1";
+    banner.style.borderColor = "rgba(56, 189, 248, 0.4)";
+  } else {
+    banner.innerHTML = `
+      <span style="color:#10b981; font-size:1.1rem; font-weight:900;">✓</span>
+      <span style="color:#f8fafc;">${message || 'Cloud Firestore data synchronized!'}</span>
+    `;
+    banner.style.transform = "translateY(0)";
+    banner.style.opacity = "1";
+    banner.style.borderColor = "rgba(16, 185, 129, 0.4)";
+
+    setTimeout(() => {
+      banner.style.transform = "translateY(100px)";
+      banner.style.opacity = "0";
+    }, 2800);
+  }
+}
+
 function renderSkeletons() {
   // 1. KPI Skeletons
   const revEl = document.getElementById("kpiTotalRevenue");
@@ -393,7 +449,16 @@ function renderSkeletons() {
   // 2. Recent Orders Table Skeleton
   const recentTbody = document.getElementById("overviewRecentOrdersTbody");
   if (recentTbody && !ordersList.length) {
-    recentTbody.innerHTML = Array.from({ length: 4 }).map(() => `
+    recentTbody.innerHTML = `
+      <tr>
+        <td colspan="6" style="text-align:center; padding: 1.25rem 1rem !important; background: rgba(56, 189, 248, 0.04); border-bottom: 1px solid var(--glass-border);">
+          <div style="display:flex; align-items:center; justify-content:center; gap:0.6rem; color: #38bdf8; font-weight:700; font-size:0.88rem;">
+            <svg style="animation: spin 1s linear infinite;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            <span>Connecting to Cloud Firestore... Fetching recent orders</span>
+          </div>
+        </td>
+      </tr>
+    ` + Array.from({ length: 3 }).map(() => `
       <tr class="skeleton-tr">
         <td><span class="skeleton-box" style="width:85px; height:16px;"></span></td>
         <td>
@@ -411,7 +476,16 @@ function renderSkeletons() {
   // 3. Products Catalog Table Skeleton
   const productsTbody = document.getElementById("productsTableTbody");
   if (productsTbody && !productsList.length) {
-    productsTbody.innerHTML = Array.from({ length: 5 }).map(() => `
+    productsTbody.innerHTML = `
+      <tr>
+        <td colspan="7" style="text-align:center; padding: 1.25rem 1rem !important; background: rgba(56, 189, 248, 0.04); border-bottom: 1px solid var(--glass-border);">
+          <div style="display:flex; align-items:center; justify-content:center; gap:0.6rem; color: #38bdf8; font-weight:700; font-size:0.88rem;">
+            <svg style="animation: spin 1s linear infinite;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            <span>Connecting to Cloud Firestore... Loading products inventory</span>
+          </div>
+        </td>
+      </tr>
+    ` + Array.from({ length: 4 }).map(() => `
       <tr class="skeleton-tr">
         <td>
           <div style="display:flex; align-items:center; gap:0.75rem;">
@@ -435,7 +509,16 @@ function renderSkeletons() {
   // 4. Orders Management Table Skeleton
   const ordersTbody = document.getElementById("ordersTableTbody");
   if (ordersTbody && !ordersList.length) {
-    ordersTbody.innerHTML = Array.from({ length: 5 }).map(() => `
+    ordersTbody.innerHTML = `
+      <tr>
+        <td colspan="6" style="text-align:center; padding: 1.25rem 1rem !important; background: rgba(56, 189, 248, 0.04); border-bottom: 1px solid var(--glass-border);">
+          <div style="display:flex; align-items:center; justify-content:center; gap:0.6rem; color: #38bdf8; font-weight:700; font-size:0.88rem;">
+            <svg style="animation: spin 1s linear infinite;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            <span>Connecting to Cloud Firestore... Loading customer orders</span>
+          </div>
+        </td>
+      </tr>
+    ` + Array.from({ length: 4 }).map(() => `
       <tr class="skeleton-tr">
         <td>
           <span class="skeleton-box" style="width:90px; height:16px; display:block; margin-bottom:4px;"></span>
@@ -468,6 +551,7 @@ function renderSkeletons() {
 
 // ==================== DATA SYNC & RENDERING ====================
 async function refreshAllData() {
+  updateSyncStatusBanner(true, "⚡ Connecting to Cloud Firestore... Fetching live products & orders");
   try {
     try {
       await loadAdminProfileFromFirestore();
@@ -493,8 +577,11 @@ async function refreshAllData() {
     try {
       await loadAnnouncementAdminSettings();
     } catch (e) { }
+
+    updateSyncStatusBanner(false, `✅ Firestore Synced (${productsList.length} products, ${ordersList.length} orders)`);
   } catch (err) {
     console.warn("Admin data sync notice (using cached data):", err);
+    updateSyncStatusBanner(false, "✓ Synced with local cache");
   }
 }
 
