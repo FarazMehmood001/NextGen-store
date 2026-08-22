@@ -721,6 +721,69 @@ export class DBService {
     window.dispatchEvent(new CustomEvent("aura_flash_deal_changed", { detail: cleanData }));
     return cleanData;
   }
+
+  // ==================== BENTO HERO SOCIAL PROOF SETTINGS ====================
+  static async getSocialProof() {
+    const LOCAL_SOCIAL_KEY = "aura_social_proof_cache";
+    let localData = null;
+    try {
+      const raw = localStorage.getItem(LOCAL_SOCIAL_KEY);
+      if (raw) localData = JSON.parse(raw);
+    } catch (e) { }
+
+    if (isFirebaseConnected && db) {
+      try {
+        const docRef = doc(db, "settings", "social_proof");
+        const snap = await getDoc(docRef);
+        if (snap.exists()) {
+          const cloudData = snap.data();
+          saveLocalItems(LOCAL_SOCIAL_KEY, cloudData);
+          return cloudData;
+        }
+      } catch (e) {
+        console.warn("Firestore social proof fetch error:", e);
+      }
+    }
+
+    if (localData) return localData;
+
+    return {
+      enabled: false, // Default is OFF / Hidden until admin turns it on
+      badge: "✨ Live Customer Activity",
+      verifiedBadge: "Verified",
+      headline: "50,000+ Happy Customers",
+      ratingText: "★ 4.9 Rating (4,800+ Reviews)",
+      updatedAt: new Date().toISOString()
+    };
+  }
+
+  static async saveSocialProof(socialData) {
+    const LOCAL_SOCIAL_KEY = "aura_social_proof_cache";
+    const cleanData = {
+      enabled: Boolean(socialData.enabled),
+      badge: (socialData.badge || "✨ Live Customer Activity").trim(),
+      verifiedBadge: (socialData.verifiedBadge || "Verified").trim(),
+      headline: (socialData.headline || "50,000+ Happy Customers").trim(),
+      ratingText: (socialData.ratingText || "★ 4.9 Rating (4,800+ Reviews)").trim(),
+      updatedAt: new Date().toISOString()
+    };
+
+    if (isFirebaseConnected && db) {
+      try {
+        await setDoc(doc(db, "settings", "social_proof"), cleanData, { merge: true });
+        console.log("✅ Social proof settings saved to Firestore settings/social_proof");
+      } catch (e) {
+        console.warn("Firestore social proof save error:", e);
+      }
+    }
+
+    try {
+      localStorage.setItem(LOCAL_SOCIAL_KEY, JSON.stringify(cleanData));
+    } catch (e) { }
+
+    window.dispatchEvent(new CustomEvent("aura_social_proof_changed", { detail: cleanData }));
+    return cleanData;
+  }
 }
 
 DBService.init();

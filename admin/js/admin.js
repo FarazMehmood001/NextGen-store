@@ -673,6 +673,7 @@ async function refreshAllData({ showBanner = false, silent = false } = {}) {
       await loadAnnouncementAdminSettings();
       await loadPromoBannerAdminSettings();
       await loadFlashDealAdminSettings();
+      await loadSocialProofAdminSettings();
     } catch (e) { }
 
     if (shouldShowBanner) {
@@ -1260,6 +1261,88 @@ function updateFlashDealLivePreviewUI() {
   }
 }
 
+// ==================== HERO BENTO SOCIAL PROOF ADMIN SYSTEM ====================
+let currentSocialProofData = {
+  enabled: false,
+  badge: "✨ Live Customer Activity",
+  verifiedBadge: "Verified",
+  headline: "50,000+ Happy Customers",
+  ratingText: "★ 4.9 Rating (4,800+ Reviews)"
+};
+
+async function loadSocialProofAdminSettings() {
+  try {
+    const data = await DBService.getSocialProof();
+    if (data) {
+      currentSocialProofData = { ...currentSocialProofData, ...data };
+    }
+    populateSocialProofForm();
+    updateSocialProofLivePreviewUI();
+  } catch (err) {
+    console.warn("Failed to load social proof admin settings:", err);
+  }
+}
+
+function populateSocialProofForm() {
+  const toggle = document.getElementById("socialProofEnabledToggle");
+  const badgeInput = document.getElementById("socialProofBadgeInput");
+  const verifiedInput = document.getElementById("socialProofVerifiedInput");
+  const headlineInput = document.getElementById("socialProofHeadlineInput");
+  const ratingInput = document.getElementById("socialProofRatingInput");
+
+  if (toggle) toggle.checked = Boolean(currentSocialProofData.enabled);
+  if (badgeInput) badgeInput.value = currentSocialProofData.badge || "✨ Live Customer Activity";
+  if (verifiedInput) verifiedInput.value = currentSocialProofData.verifiedBadge || "Verified";
+  if (headlineInput) headlineInput.value = currentSocialProofData.headline || "50,000+ Happy Customers";
+  if (ratingInput) ratingInput.value = currentSocialProofData.ratingText || "★ 4.9 Rating (4,800+ Reviews)";
+}
+
+function updateSocialProofLivePreviewUI() {
+  const toggle = document.getElementById("socialProofEnabledToggle");
+  const badgeInput = document.getElementById("socialProofBadgeInput");
+  const verifiedInput = document.getElementById("socialProofVerifiedInput");
+  const headlineInput = document.getElementById("socialProofHeadlineInput");
+  const ratingInput = document.getElementById("socialProofRatingInput");
+
+  const previewBox = document.getElementById("adminSocialProofLivePreview");
+  const previewBadge = document.getElementById("adminSocialProofPreviewBadge");
+  const previewVerified = document.getElementById("adminSocialProofPreviewVerified");
+  const previewHeadline = document.getElementById("adminSocialProofPreviewHeadline");
+  const previewRating = document.getElementById("adminSocialProofPreviewRating");
+  const statusIndicator = document.getElementById("socialProofStatusIndicator");
+
+  const isEnabled = toggle ? toggle.checked : false;
+
+  if (statusIndicator) {
+    if (isEnabled) {
+      statusIndicator.innerHTML = '<span style="width:8px; height:8px; border-radius:50%; background:#10b981;"></span><span>STATUS: LIVE ON STORE</span>';
+      statusIndicator.style.background = "rgba(16, 185, 129, 0.15)";
+      statusIndicator.style.color = "#10b981";
+      statusIndicator.style.borderColor = "rgba(16, 185, 129, 0.3)";
+    } else {
+      statusIndicator.innerHTML = '<span style="width:8px; height:8px; border-radius:50%; background:#ef4444;"></span><span>STATUS: HIDDEN / OFF</span>';
+      statusIndicator.style.background = "rgba(239, 68, 68, 0.15)";
+      statusIndicator.style.color = "#ef4444";
+      statusIndicator.style.borderColor = "rgba(239, 68, 68, 0.3)";
+    }
+  }
+
+  if (previewBadge) previewBadge.textContent = badgeInput?.value.trim() || "✨ Live Customer Activity";
+  if (previewVerified) previewVerified.textContent = verifiedInput?.value.trim() || "Verified";
+  if (previewHeadline) previewHeadline.textContent = headlineInput?.value.trim() || "50,000+ Happy Customers";
+  if (previewRating) previewRating.textContent = ratingInput?.value.trim() || "★ 4.9 Rating (4,800+ Reviews)";
+
+  if (previewBox) {
+    if (!isEnabled) {
+      previewBox.style.opacity = "0.45";
+      previewBox.style.filter = "grayscale(0.7)";
+    } else {
+      previewBox.style.opacity = "1";
+      previewBox.style.filter = "none";
+    }
+  }
+}
+
 // ==================== EVENT LISTENERS SETUP ====================
 function setupEventListeners() {
   // Topbar and Section Header Add Product Buttons
@@ -1677,6 +1760,71 @@ function setupEventListeners() {
     }
   });
 
+  // Hero Bento Social Proof Live Controls & Form Submit
+  const socialEnabledToggle = document.getElementById("socialProofEnabledToggle");
+  const socialBadgeInput = document.getElementById("socialProofBadgeInput");
+  const socialVerifiedInput = document.getElementById("socialProofVerifiedInput");
+  const socialHeadlineInput = document.getElementById("socialProofHeadlineInput");
+  const socialRatingInput = document.getElementById("socialProofRatingInput");
+  const adminSocialProofForm = document.getElementById("adminSocialProofForm");
+  const socialProofTurnOffBtn = document.getElementById("socialProofTurnOffBtn");
+
+  socialEnabledToggle?.addEventListener("change", () => updateSocialProofLivePreviewUI());
+  socialBadgeInput?.addEventListener("input", () => updateSocialProofLivePreviewUI());
+  socialVerifiedInput?.addEventListener("input", () => updateSocialProofLivePreviewUI());
+  socialHeadlineInput?.addEventListener("input", () => updateSocialProofLivePreviewUI());
+  socialRatingInput?.addEventListener("input", () => updateSocialProofLivePreviewUI());
+
+  adminSocialProofForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const saveBtn = document.getElementById("socialProofSaveBtn");
+    if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = "Publishing Social Proof..."; }
+
+    try {
+      const payload = {
+        enabled: Boolean(socialEnabledToggle?.checked),
+        badge: socialBadgeInput?.value.trim() || "✨ Live Customer Activity",
+        verifiedBadge: socialVerifiedInput?.value.trim() || "Verified",
+        headline: socialHeadlineInput?.value.trim() || "50,000+ Happy Customers",
+        ratingText: socialRatingInput?.value.trim() || "★ 4.9 Rating (4,800+ Reviews)"
+      };
+
+      await DBService.saveSocialProof(payload);
+      currentSocialProofData = { ...payload };
+      updateSocialProofLivePreviewUI();
+
+      if (payload.enabled) {
+        showToast("👥 Hero Social Proof card published and live on storefront!", "success");
+      } else {
+        showToast("Hero Social Proof card saved (currently hidden/disabled).", "info");
+      }
+    } catch (err) {
+      showToast("Failed to save social proof: " + err.message, "error");
+    } finally {
+      if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = "💾 Save & Publish Social Proof"; }
+    }
+  });
+
+  socialProofTurnOffBtn?.addEventListener("click", async () => {
+    if (socialEnabledToggle) socialEnabledToggle.checked = false;
+    updateSocialProofLivePreviewUI();
+
+    try {
+      const payload = {
+        enabled: false,
+        badge: socialBadgeInput?.value.trim() || "✨ Live Customer Activity",
+        verifiedBadge: socialVerifiedInput?.value.trim() || "Verified",
+        headline: socialHeadlineInput?.value.trim() || "50,000+ Happy Customers",
+        ratingText: socialRatingInput?.value.trim() || "★ 4.9 Rating (4,800+ Reviews)"
+      };
+      await DBService.saveSocialProof(payload);
+      currentSocialProofData = { ...payload };
+      showToast("🚫 Hero social proof card has been disabled and hidden from store.", "info");
+    } catch (err) {
+      showToast("Error updating social proof: " + err.message, "error");
+    }
+  });
+
   // Built-in Admin Gate Login Form (Modal)
   document.getElementById("gateLoginForm")?.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -1726,10 +1874,11 @@ function setupEventListeners() {
   window.addEventListener("aura_orders_changed", () => refreshAllData({ silent: true }));
   window.addEventListener("aura_announcement_changed", () => loadAnnouncementAdminSettings());
   window.addEventListener("aura_flash_deal_changed", () => loadFlashDealAdminSettings());
+  window.addEventListener("aura_social_proof_changed", () => loadSocialProofAdminSettings());
 
   // Real-time synchronization across browser tabs (Silent)
   window.addEventListener("storage", (e) => {
-    if (e.key === "aura_orders_cache" || e.key === "aura_products_cache" || e.key === "aura_announcement_cache" || e.key === "aura_flash_deal_cache") {
+    if (e.key === "aura_orders_cache" || e.key === "aura_products_cache" || e.key === "aura_announcement_cache" || e.key === "aura_flash_deal_cache" || e.key === "aura_social_proof_cache") {
       refreshAllData({ silent: true });
     }
   });

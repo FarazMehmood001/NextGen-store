@@ -136,7 +136,7 @@
   <!-- ==================== FUTURISTIC BENTO GRID HERO SECTION ==================== -->
   <section class="section" id="heroSection" style="padding-top: 0.5rem; padding-bottom: 2rem;">
     <div class="container">
-      <div class="hero-bento-grid">
+      <div class="hero-bento-grid all-deals-hidden" id="heroBentoGrid">
 
         <!-- BENTO 1: Large Flagship Feature Showcase -->
         <div class="bento-card bento-main">
@@ -172,20 +172,26 @@
           </div>
         </div>
 
-        <!-- BENTO 2: Live Flash Deal Countdown -->
-        <div class="bento-card bento-deal">
+        <!-- BENTO 2: Live Flash Deal Countdown (Admin Controlled - Hidden by Default) -->
+        <div class="bento-card bento-deal" id="heroFlashDealCard" style="display:none;">
           <div>
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
-              <span
-                style="font-size:0.75rem; font-weight:800; color:var(--color-orange); text-transform:uppercase; letter-spacing:0.05em;">🔥
-                Deal of the Day</span>
-              <span
-                style="font-size:0.75rem; background:rgba(249,115,22,0.2); color:var(--color-orange); padding:2px 8px; border-radius:10px; font-weight:800;">-25%
-                OFF</span>
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:0.75rem;">
+              <div style="flex:1;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+                  <span id="flashDealBadge"
+                    style="font-size:0.75rem; font-weight:800; color:var(--color-orange); text-transform:uppercase; letter-spacing:0.05em;">🔥
+                    Deal of the Day</span>
+                  <span id="flashDealDiscountTag"
+                    style="font-size:0.75rem; background:rgba(249,115,22,0.2); color:var(--color-orange); padding:2px 8px; border-radius:10px; font-weight:800;">-25%
+                    OFF</span>
+                </div>
+                <h3 id="flashDealTitle" style="font-size:1.2rem; font-weight:800; line-height:1.25;">Aura Horizon Watch</h3>
+                <p id="flashDealDesc" style="font-size:0.82rem; color:var(--text-muted); margin-top:0.25rem;">Sapphire crystal glass & ECG monitor.</p>
+              </div>
+              <div id="flashDealImageWrapper" class="deal-card-img-thumb" style="display:none;">
+                <img id="flashDealImage" src="" alt="Deal of the Day">
+              </div>
             </div>
-            <h3 style="font-size:1.25rem; font-weight:800;">Aura Horizon Watch</h3>
-            <p style="font-size:0.82rem; color:var(--text-muted); margin-top:0.25rem;">Sapphire crystal glass & ECG
-              monitor.</p>
           </div>
 
           <div>
@@ -204,27 +210,30 @@
               </div>
             </div>
 
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.5rem;">
-              <span style="font-size:1.15rem; font-weight:800; color:var(--color-orange);">Rs. 12,500</span>
-              <button class="btn btn-secondary btn-sm"
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.4rem; gap:0.5rem;">
+              <div>
+                <span id="flashDealPrice" style="font-size:1.15rem; font-weight:800; color:var(--color-orange);">Rs. 12,500</span>
+                <span id="flashDealOriginalPrice" style="font-size:0.8rem; color:var(--text-muted); text-decoration:line-through; margin-left:4px;"></span>
+              </div>
+              <button class="btn btn-secondary btn-sm" id="flashDealBtn"
                 onclick="document.getElementById('productsSection').scrollIntoView({ behavior: 'smooth' });"
-                style="border-color:var(--color-orange); color:var(--color-orange);">
+                style="border-color:var(--color-orange); color:var(--color-orange); font-weight:800;">
                 Claim Deal
               </button>
             </div>
           </div>
         </div>
 
-        <!-- BENTO 3: Live Social Proof Ticker -->
-        <div class="bento-card bento-social">
+        <!-- BENTO 3: Live Social Proof Ticker (Admin Controlled - Hidden by Default) -->
+        <div class="bento-card bento-social" id="heroSocialProofCard" style="display:none;">
           <div>
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
-              <span
+              <span id="socialProofBadge"
                 style="font-size:0.75rem; font-weight:800; color:var(--color-emerald); text-transform:uppercase; letter-spacing:0.05em;">✨
                 Live Customer Activity</span>
-              <span style="font-size:0.75rem; color:var(--color-emerald); font-weight:800;">Verified</span>
+              <span id="socialProofVerifiedTag" style="font-size:0.75rem; color:var(--color-emerald); font-weight:800;">Verified</span>
             </div>
-            <h3 style="font-size:1.2rem; font-weight:800;">50,000+ Happy Customers</h3>
+            <h3 id="socialProofHeadline" style="font-size:1.2rem; font-weight:800;">50,000+ Happy Customers</h3>
           </div>
 
           <div>
@@ -246,7 +255,7 @@
                 <img src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=100&q=80"
                   alt="Customer">
               </div>
-              <span style="font-size:0.82rem; font-weight:800; color:#fbbf24;">★ 4.9 Rating (4,800+ Reviews)</span>
+              <span id="socialProofRating" style="font-size:0.82rem; font-weight:800; color:#fbbf24;">★ 4.9 Rating (4,800+ Reviews)</span>
             </div>
           </div>
         </div>

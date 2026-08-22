@@ -35,6 +35,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   await loadAnnouncementTicker();
   await loadPromoBanner();
   await loadFlashDealCard();
+  await loadSocialProofCard();
   setupFAQAccordion();
 
   // Initialize Cart
@@ -264,10 +265,27 @@ async function loadPromoBanner() {
   }
 }
 
-// ==================== HERO BENTO FLASH DEAL (ADMIN CONTROLLED) ====================
+// ==================== HERO BENTO DYNAMIC GRID & CARDS (ADMIN CONTROLLED) ====================
+let isFlashDealActive = false;
+let isSocialProofActive = false;
+
+function updateBentoGridState() {
+  const heroGrid = document.getElementById("heroBentoGrid");
+  if (!heroGrid) return;
+
+  heroGrid.classList.remove("all-deals-hidden", "deal-only", "social-only", "deal-hidden");
+
+  if (!isFlashDealActive && !isSocialProofActive) {
+    heroGrid.classList.add("all-deals-hidden");
+  } else if (isFlashDealActive && !isSocialProofActive) {
+    heroGrid.classList.add("deal-only");
+  } else if (!isFlashDealActive && isSocialProofActive) {
+    heroGrid.classList.add("social-only");
+  }
+}
+
 async function loadFlashDealCard() {
   const dealCard = document.getElementById("heroFlashDealCard");
-  const heroGrid = document.getElementById("heroBentoGrid");
   const badgeEl = document.getElementById("flashDealBadge");
   const discountTagEl = document.getElementById("flashDealDiscountTag");
   const titleEl = document.getElementById("flashDealTitle");
@@ -283,6 +301,7 @@ async function loadFlashDealCard() {
   try {
     const data = await DBService.getFlashDeal();
     if (data && data.enabled) {
+      isFlashDealActive = true;
       if (badgeEl) badgeEl.textContent = data.badge || "🔥 Deal of the Day";
       if (discountTagEl) discountTagEl.textContent = data.discountTag || "-25% OFF";
       if (titleEl) titleEl.textContent = data.title || "Aura Horizon Watch";
@@ -312,18 +331,49 @@ async function loadFlashDealCard() {
       }
 
       startFlashCountdown(data.hours, data.minutes, data.seconds);
-
       dealCard.style.display = "flex";
-      if (heroGrid) heroGrid.classList.remove("deal-hidden");
     } else {
+      isFlashDealActive = false;
       dealCard.style.display = "none";
-      if (heroGrid) heroGrid.classList.add("deal-hidden");
     }
   } catch (err) {
     console.warn("Failed to load flash deal card:", err);
+    isFlashDealActive = false;
     dealCard.style.display = "none";
-    if (heroGrid) heroGrid.classList.add("deal-hidden");
   }
+
+  updateBentoGridState();
+}
+
+async function loadSocialProofCard() {
+  const socialCard = document.getElementById("heroSocialProofCard");
+  const badgeEl = document.getElementById("socialProofBadge");
+  const verifiedTagEl = document.getElementById("socialProofVerifiedTag");
+  const headlineEl = document.getElementById("socialProofHeadline");
+  const ratingEl = document.getElementById("socialProofRating");
+
+  if (!socialCard) return;
+
+  try {
+    const data = await DBService.getSocialProof();
+    if (data && data.enabled) {
+      isSocialProofActive = true;
+      if (badgeEl) badgeEl.textContent = data.badge || "✨ Live Customer Activity";
+      if (verifiedTagEl) verifiedTagEl.textContent = data.verifiedBadge || "Verified";
+      if (headlineEl) headlineEl.textContent = data.headline || "50,000+ Happy Customers";
+      if (ratingEl) ratingEl.textContent = data.ratingText || "★ 4.9 Rating (4,800+ Reviews)";
+      socialCard.style.display = "flex";
+    } else {
+      isSocialProofActive = false;
+      socialCard.style.display = "none";
+    }
+  } catch (err) {
+    console.warn("Failed to load social proof card:", err);
+    isSocialProofActive = false;
+    socialCard.style.display = "none";
+  }
+
+  updateBentoGridState();
 }
 
 // Listen for admin changes in real time across tabs and events
@@ -336,6 +386,9 @@ window.addEventListener("aura_promo_banner_changed", () => {
 window.addEventListener("aura_flash_deal_changed", () => {
   loadFlashDealCard();
 });
+window.addEventListener("aura_social_proof_changed", () => {
+  loadSocialProofCard();
+});
 window.addEventListener("storage", (e) => {
   if (e.key === "aura_announcement_cache") {
     loadAnnouncementTicker();
@@ -345,6 +398,9 @@ window.addEventListener("storage", (e) => {
   }
   if (e.key === "aura_flash_deal_cache") {
     loadFlashDealCard();
+  }
+  if (e.key === "aura_social_proof_cache") {
+    loadSocialProofCard();
   }
 });
 

@@ -679,6 +679,114 @@
               </div>
             </form>
           </div>
+
+          <!-- ==================== 6. HERO BENTO SOCIAL PROOF MANAGEMENT ==================== -->
+          <div class="admin-card" style="margin-top: 2rem;">
+            <div class="admin-card-header" style="align-items:flex-start;">
+              <div>
+                <h3 class="admin-card-title">
+                  <span>👥 Hero Bento Social Proof & Live Activity Card</span>
+                </h3>
+                <p style="color:var(--text-secondary); font-size:0.85rem; margin-top:0.25rem;">
+                  Manage the live customer activity & social proof box in the hero Bento grid. Turn it ON/OFF and customize headline, reviews, and badges.
+                </p>
+              </div>
+              <div id="socialProofStatusIndicator"
+                style="display:inline-flex; align-items:center; gap:0.5rem; padding:0.4rem 0.85rem; border-radius:20px; font-size:0.8rem; font-weight:700; background:rgba(239, 68, 68, 0.15); color:#ef4444; border:1px solid rgba(239, 68, 68, 0.3);">
+                <span style="width:8px; height:8px; border-radius:50%; background:#ef4444;"></span>
+                <span>STATUS: HIDDEN / OFF</span>
+              </div>
+            </div>
+
+            <!-- Real-time Live Preview Card -->
+            <div style="margin-bottom:1.5rem; background:var(--bg-elevated); border:1px solid var(--glass-border); border-radius:var(--radius-lg); padding:1.5rem;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+                <h4 style="font-size:0.9rem; font-weight:700; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.04em;">
+                  👁️ Real-Time Hero Social Proof Preview
+                </h4>
+                <span style="font-size:0.75rem; color:var(--text-muted);">Exact visual appearance in hero section</span>
+              </div>
+
+              <div id="adminSocialProofLivePreview"
+                style="max-width:380px; margin:0 auto; background: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(6, 182, 212, 0.1) 100%); border: 1px solid rgba(16, 185, 129, 0.35); border-radius:16px; padding: 1.5rem; box-shadow:0 8px 24px rgba(0,0,0,0.3);">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+                  <span id="adminSocialProofPreviewBadge"
+                    style="font-size:0.75rem; font-weight:800; color:var(--color-emerald); text-transform:uppercase; letter-spacing:0.05em;">✨ Live Customer Activity</span>
+                  <span id="adminSocialProofPreviewVerified" style="font-size:0.75rem; color:var(--color-emerald); font-weight:800;">Verified</span>
+                </div>
+                <h4 id="adminSocialProofPreviewHeadline" style="font-size:1.15rem; font-weight:800; margin-bottom:0.5rem; color:#f8fafc;">
+                  50,000+ Happy Customers
+                </h4>
+
+                <div style="background:var(--bg-elevated); border:1px solid rgba(16, 185, 129, 0.25); border-radius:8px; padding:0.6rem 0.8rem; margin:0.65rem 0; display:flex; align-items:center; gap:0.6rem;">
+                  <div style="font-size:1.1rem;">🛍️</div>
+                  <div style="font-size:0.78rem; line-height:1.25;">
+                    <strong style="color:var(--color-emerald); display:block;">Hamza from Lahore</strong>
+                    <span style="color:var(--text-muted);">Just ordered Aura Pro Titanium ANC</span>
+                  </div>
+                </div>
+
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-top:0.75rem;">
+                  <div class="customer-avatar-stack">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" alt="Avatar">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80" alt="Avatar">
+                    <img src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=100&q=80" alt="Avatar">
+                  </div>
+                  <span id="adminSocialProofPreviewRating" style="font-size:0.8rem; font-weight:800; color:#fbbf24;">★ 4.9 Rating (4,800+ Reviews)</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Configuration Form -->
+            <form id="adminSocialProofForm">
+              <div class="form-group"
+                style="background:var(--bg-elevated); padding:1rem 1.25rem; border-radius:var(--radius-md); border:1px solid var(--glass-border); display:flex; align-items:center; justify-content:space-between;">
+                <div>
+                  <strong style="display:block; font-size:0.95rem; color:var(--text-primary);">Enable Social Proof Card</strong>
+                  <span style="font-size:0.8rem; color:var(--text-secondary);">When switched OFF, this card is completely removed from the hero section.</span>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="socialProofEnabledToggle">
+                  <span class="switch-slider" id="socialProofToggleSliderSpan"></span>
+                </label>
+              </div>
+
+              <div class="form-grid-2" style="margin-top:1.25rem;">
+                <div class="form-group">
+                  <label class="form-label" for="socialProofBadgeInput">Activity Badge Tag</label>
+                  <input type="text" id="socialProofBadgeInput" class="form-input"
+                    placeholder="e.g. ✨ Live Customer Activity" value="✨ Live Customer Activity">
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="socialProofVerifiedInput">Verification Tag</label>
+                  <input type="text" id="socialProofVerifiedInput" class="form-input"
+                    placeholder="e.g. Verified or Live" value="Verified">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="socialProofHeadlineInput">Social Proof Headline *</label>
+                <input type="text" id="socialProofHeadlineInput" class="form-input"
+                  placeholder="e.g. 50,000+ Happy Customers" value="50,000+ Happy Customers" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="socialProofRatingInput">Review Rating & Count Text</label>
+                <input type="text" id="socialProofRatingInput" class="form-input"
+                  placeholder="e.g. ★ 4.9 Rating (4,800+ Reviews)" value="★ 4.9 Rating (4,800+ Reviews)">
+              </div>
+
+              <div style="display:flex; gap:1rem; align-items:center; margin-top:1.5rem; justify-content:flex-end;">
+                <button type="button" class="btn btn-secondary" id="socialProofTurnOffBtn">
+                  🚫 Disable & Hide Social Proof
+                </button>
+                <button type="submit" class="btn btn-primary" id="socialProofSaveBtn" style="padding:0.7rem 1.75rem; background:linear-gradient(135deg, #10b981 0%, #06b6d4 100%); border:none;">
+                  💾 Save & Publish Social Proof
+                </button>
+              </div>
+            </form>
+          </div>
         </section>
 
       </div>

@@ -274,15 +274,41 @@
   transition: all 0.35s ease;
 }
 
+.hero-bento-grid.all-deals-hidden {
+  grid-template-columns: 1fr;
+}
+
+.hero-bento-grid.all-deals-hidden .bento-main {
+  grid-column: 1 / -1;
+  grid-row: 1 / 2;
+}
+
+.hero-bento-grid.deal-only {
+  grid-template-columns: 1.5fr 1fr;
+}
+
+.hero-bento-grid.deal-only .bento-main {
+  grid-column: 1 / 2;
+  grid-row: 1 / 2;
+}
+
+.hero-bento-grid.deal-only .bento-deal {
+  grid-column: 2 / 3;
+  grid-row: 1 / 2;
+}
+
+.hero-bento-grid.social-only,
 .hero-bento-grid.deal-hidden {
   grid-template-columns: 1.5fr 1fr;
 }
 
+.hero-bento-grid.social-only .bento-main,
 .hero-bento-grid.deal-hidden .bento-main {
   grid-column: 1 / 2;
   grid-row: 1 / 2;
 }
 
+.hero-bento-grid.social-only .bento-social,
 .hero-bento-grid.deal-hidden .bento-social {
   grid-column: 2 / 3;
   grid-row: 1 / 2;
