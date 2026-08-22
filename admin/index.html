@@ -787,6 +787,112 @@
               </div>
             </form>
           </div>
+
+          <!-- ==================== 7. HERO MAIN FLAGSHIP / BEST SELLER SHOWCASE ==================== -->
+          <div class="admin-card" style="margin-top: 2rem;">
+            <div class="admin-card-header" style="align-items:flex-start;">
+              <div>
+                <h3 class="admin-card-title">
+                  <span>👑 Hero Flagship & Best Seller Showcase Banner</span>
+                </h3>
+                <p style="color:var(--text-secondary); font-size:0.85rem; margin-top:0.25rem;">
+                  Customize the main hero feature banner. Change the showcase picture, title, description, badge, and link it to any product so customers can click the picture to view details!
+                </p>
+              </div>
+            </div>
+
+            <!-- Real-time Live Preview Card -->
+            <div style="margin-bottom:1.5rem; background:var(--bg-elevated); border:1px solid var(--glass-border); border-radius:var(--radius-lg); padding:1.5rem;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+                <h4 style="font-size:0.9rem; font-weight:700; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.04em;">
+                  👁️ Real-Time Main Hero Banner Preview
+                </h4>
+                <span style="font-size:0.75rem; color:var(--text-muted);">Exact visual appearance on homepage</span>
+              </div>
+
+              <div id="adminHeroShowcaseLivePreview"
+                style="background:var(--bg-card); border:1px solid rgba(6, 182, 212, 0.35); border-radius:16px; padding:1.75rem; display:flex; gap:1.5rem; align-items:center; flex-wrap:wrap; box-shadow:0 10px 30px rgba(0,0,0,0.4);">
+                <div style="flex:1; min-width:240px;">
+                  <div style="display:inline-flex; align-items:center; gap:0.45rem; padding:0.3rem 0.8rem; border-radius:20px; background:rgba(6, 182, 212, 0.15); border:1px solid rgba(6, 182, 212, 0.4); color:var(--color-cyan); font-size:0.75rem; font-weight:800; text-transform:uppercase; margin-bottom:0.75rem;">
+                    <span style="width:7px; height:7px; border-radius:50%; background:var(--color-cyan); box-shadow:0 0 8px var(--color-cyan);"></span>
+                    <span id="adminHeroShowcasePreviewBadge">AURA Neo-Titanium Flagship</span>
+                  </div>
+                  <h3 id="adminHeroShowcasePreviewTitle" style="font-size:1.45rem; font-weight:800; margin-bottom:0.5rem; color:#f8fafc; line-height:1.25;">
+                    Redefining Acoustic Immersion & Wearable Tech.
+                  </h3>
+                  <p id="adminHeroShowcasePreviewDesc" style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:1rem; line-height:1.4;">
+                    Precision titanium engineering, adaptive spatial cancellation, and real-time cloud synchronization.
+                  </p>
+                  <button type="button" class="btn btn-primary btn-sm" id="adminHeroShowcasePreviewBtn" style="pointer-events:none;">
+                    Explore Collection →
+                  </button>
+                </div>
+                <div style="width:140px; height:140px; border-radius:12px; background:radial-gradient(circle at center, rgba(6, 182, 212, 0.3) 0%, transparent 70%); border:1px solid rgba(6, 182, 212, 0.25); display:flex; align-items:center; justify-content:center; overflow:hidden; flex-shrink:0;">
+                  <img id="adminHeroShowcasePreviewImg" src="https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=800&q=80" alt="Showcase" style="width:90%; height:90%; object-fit:contain;">
+                </div>
+              </div>
+            </div>
+
+            <!-- Configuration Form -->
+            <form id="adminHeroShowcaseForm">
+              <div class="form-group" style="background:var(--bg-elevated); padding:1rem 1.25rem; border-radius:var(--radius-md); border:1px solid var(--glass-border); margin-bottom:1.25rem;">
+                <label class="form-label" for="heroShowcaseProductSelect" style="display:flex; align-items:center; justify-content:space-between;">
+                  <span>⚡ Quick Select from Inventory (Best Seller / Flagship)</span>
+                  <span style="font-size:0.75rem; color:var(--color-cyan); font-weight:700;">Auto-fills details & links product</span>
+                </label>
+                <select id="heroShowcaseProductSelect" class="form-select">
+                  <option value="">-- Choose a product to feature as Best Seller / Flagship --</option>
+                </select>
+              </div>
+
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label class="form-label" for="heroShowcaseBadgeInput">Hero Badge / Tag</label>
+                  <input type="text" id="heroShowcaseBadgeInput" class="form-input"
+                    placeholder="e.g. AURA Neo-Titanium Flagship or 🔥 BEST SELLER" value="AURA Neo-Titanium Flagship">
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="heroShowcaseLinkedIdInput">Linked Product ID (Opens on click)</label>
+                  <input type="text" id="heroShowcaseLinkedIdInput" class="form-input"
+                    placeholder="e.g. prod-1" value="prod-1">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="heroShowcaseTitleInput">Main Headline Title *</label>
+                <input type="text" id="heroShowcaseTitleInput" class="form-input"
+                  placeholder="e.g. Redefining Acoustic Immersion & Wearable Tech." value="Redefining Acoustic Immersion & Wearable Tech." required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="heroShowcaseDescInput">Showcase Description *</label>
+                <textarea id="heroShowcaseDescInput" class="form-input" rows="2"
+                  placeholder="Precision titanium engineering, adaptive spatial cancellation, and real-time cloud synchronization." required>Precision titanium engineering, adaptive spatial cancellation, and real-time cloud synchronization.</textarea>
+              </div>
+
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label class="form-label" for="heroShowcaseImageInput">Showcase Picture URL *</label>
+                  <input type="url" id="heroShowcaseImageInput" class="form-input"
+                    placeholder="https://images.unsplash.com/..." value="https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=800&q=80" required>
+                  <small style="color:var(--text-muted); font-size:0.75rem;">High quality product photo (transparent PNG or dark background recommended)</small>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="heroShowcaseBtnTextInput">Explore Button Text</label>
+                  <input type="text" id="heroShowcaseBtnTextInput" class="form-input"
+                    placeholder="e.g. Explore Collection" value="Explore Collection">
+                </div>
+              </div>
+
+              <div style="display:flex; gap:1rem; align-items:center; margin-top:1.5rem; justify-content:flex-end;">
+                <button type="submit" class="btn btn-primary" id="heroShowcaseSaveBtn" style="padding:0.7rem 1.75rem; background:linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%); border:none;">
+                  💾 Save & Publish Hero Showcase
+                </button>
+              </div>
+            </form>
+          </div>
         </section>
 
       </div>

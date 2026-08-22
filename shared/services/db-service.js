@@ -784,6 +784,71 @@ export class DBService {
     window.dispatchEvent(new CustomEvent("aura_social_proof_changed", { detail: cleanData }));
     return cleanData;
   }
+
+  // ==================== HERO MAIN BENTO SHOWCASE (BEST SELLER / FLAGSHIP) ====================
+  static async getHeroShowcase() {
+    const LOCAL_HERO_KEY = "aura_hero_showcase_cache";
+    let localData = null;
+    try {
+      const raw = localStorage.getItem(LOCAL_HERO_KEY);
+      if (raw) localData = JSON.parse(raw);
+    } catch (e) { }
+
+    if (isFirebaseConnected && db) {
+      try {
+        const docRef = doc(db, "settings", "hero_showcase");
+        const snap = await getDoc(docRef);
+        if (snap.exists()) {
+          const cloudData = snap.data();
+          saveLocalItems(LOCAL_HERO_KEY, cloudData);
+          return cloudData;
+        }
+      } catch (e) {
+        console.warn("Firestore hero showcase fetch error:", e);
+      }
+    }
+
+    if (localData) return localData;
+
+    return {
+      badge: "AURA Neo-Titanium Flagship",
+      title: "Redefining <span class=\"gradient-text-aurora\">Acoustic Immersion</span> & Wearable Tech.",
+      description: "Precision titanium engineering, adaptive spatial cancellation, and real-time cloud synchronization.",
+      image: "https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=800&q=80",
+      buttonText: "Explore Collection",
+      productId: "prod-1",
+      updatedAt: new Date().toISOString()
+    };
+  }
+
+  static async saveHeroShowcase(showcaseData) {
+    const LOCAL_HERO_KEY = "aura_hero_showcase_cache";
+    const cleanData = {
+      badge: (showcaseData.badge || "AURA Neo-Titanium Flagship").trim(),
+      title: (showcaseData.title || "Redefining Acoustic Immersion & Wearable Tech.").trim(),
+      description: (showcaseData.description || "").trim(),
+      image: (showcaseData.image || "https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=800&q=80").trim(),
+      buttonText: (showcaseData.buttonText || "Explore Collection").trim(),
+      productId: (showcaseData.productId || "").trim(),
+      updatedAt: new Date().toISOString()
+    };
+
+    if (isFirebaseConnected && db) {
+      try {
+        await setDoc(doc(db, "settings", "hero_showcase"), cleanData, { merge: true });
+        console.log("✅ Hero showcase settings saved to Firestore settings/hero_showcase");
+      } catch (e) {
+        console.warn("Firestore hero showcase save error:", e);
+      }
+    }
+
+    try {
+      localStorage.setItem(LOCAL_HERO_KEY, JSON.stringify(cleanData));
+    } catch (e) { }
+
+    window.dispatchEvent(new CustomEvent("aura_hero_showcase_changed", { detail: cleanData }));
+    return cleanData;
+  }
 }
 
 DBService.init();

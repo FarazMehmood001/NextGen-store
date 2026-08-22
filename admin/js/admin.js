@@ -672,6 +672,7 @@ async function refreshAllData({ showBanner = false, silent = false } = {}) {
     try {
       await loadAnnouncementAdminSettings();
       await loadPromoBannerAdminSettings();
+      await loadHeroShowcaseAdminSettings();
       await loadFlashDealAdminSettings();
       await loadSocialProofAdminSettings();
     } catch (e) { }
@@ -1343,6 +1344,85 @@ function updateSocialProofLivePreviewUI() {
   }
 }
 
+// ==================== HERO BENTO SHOWCASE (BEST SELLER / FLAGSHIP) ADMIN SYSTEM ====================
+let currentHeroShowcaseData = {
+  badge: "AURA Neo-Titanium Flagship",
+  title: "Redefining <span class=\"gradient-text-aurora\">Acoustic Immersion</span> & Wearable Tech.",
+  description: "Precision titanium engineering, adaptive spatial cancellation, and real-time cloud synchronization.",
+  image: "https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=800&q=80",
+  buttonText: "Explore Collection",
+  productId: "prod-1"
+};
+
+async function loadHeroShowcaseAdminSettings() {
+  try {
+    const data = await DBService.getHeroShowcase();
+    if (data) {
+      currentHeroShowcaseData = { ...currentHeroShowcaseData, ...data };
+    }
+    populateHeroShowcaseForm();
+    populateHeroProductDropdown();
+    updateHeroShowcaseLivePreviewUI();
+  } catch (err) {
+    console.warn("Failed to load hero showcase admin settings:", err);
+  }
+}
+
+function populateHeroProductDropdown() {
+  const select = document.getElementById("heroShowcaseProductSelect");
+  if (!select) return;
+
+  select.innerHTML = '<option value="">-- Choose a product to feature as Best Seller / Flagship --</option>';
+
+  productsList.forEach(p => {
+    const opt = document.createElement("option");
+    opt.value = p.id;
+    opt.textContent = `${p.title} (${p.category || "General"} - Rs. ${Number(p.price || 0).toLocaleString()})`;
+    if (p.id === currentHeroShowcaseData.productId) {
+      opt.selected = true;
+    }
+    select.appendChild(opt);
+  });
+}
+
+function populateHeroShowcaseForm() {
+  const badgeInput = document.getElementById("heroShowcaseBadgeInput");
+  const linkedIdInput = document.getElementById("heroShowcaseLinkedIdInput");
+  const titleInput = document.getElementById("heroShowcaseTitleInput");
+  const descInput = document.getElementById("heroShowcaseDescInput");
+  const imageInput = document.getElementById("heroShowcaseImageInput");
+  const btnTextInput = document.getElementById("heroShowcaseBtnTextInput");
+
+  if (badgeInput) badgeInput.value = currentHeroShowcaseData.badge || "AURA Neo-Titanium Flagship";
+  if (linkedIdInput) linkedIdInput.value = currentHeroShowcaseData.productId || "prod-1";
+  if (titleInput) titleInput.value = currentHeroShowcaseData.title || "Redefining Acoustic Immersion & Wearable Tech.";
+  if (descInput) descInput.value = currentHeroShowcaseData.description || "";
+  if (imageInput) imageInput.value = currentHeroShowcaseData.image || "";
+  if (btnTextInput) btnTextInput.value = currentHeroShowcaseData.buttonText || "Explore Collection";
+}
+
+function updateHeroShowcaseLivePreviewUI() {
+  const badgeInput = document.getElementById("heroShowcaseBadgeInput");
+  const titleInput = document.getElementById("heroShowcaseTitleInput");
+  const descInput = document.getElementById("heroShowcaseDescInput");
+  const imageInput = document.getElementById("heroShowcaseImageInput");
+  const btnTextInput = document.getElementById("heroShowcaseBtnTextInput");
+
+  const previewBadge = document.getElementById("adminHeroShowcasePreviewBadge");
+  const previewTitle = document.getElementById("adminHeroShowcasePreviewTitle");
+  const previewDesc = document.getElementById("adminHeroShowcasePreviewDesc");
+  const previewImg = document.getElementById("adminHeroShowcasePreviewImg");
+  const previewBtn = document.getElementById("adminHeroShowcasePreviewBtn");
+
+  if (previewBadge) previewBadge.textContent = badgeInput?.value.trim() || "AURA Neo-Titanium Flagship";
+  if (previewTitle) previewTitle.innerHTML = titleInput?.value.trim() || "Redefining Acoustic Immersion & Wearable Tech.";
+  if (previewDesc) previewDesc.textContent = descInput?.value.trim() || "";
+  if (previewBtn) previewBtn.textContent = (btnTextInput?.value.trim() || "Explore Collection") + " →";
+  if (previewImg && imageInput && imageInput.value.trim()) {
+    previewImg.src = imageInput.value.trim();
+  }
+}
+
 // ==================== EVENT LISTENERS SETUP ====================
 function setupEventListeners() {
   // Topbar and Section Header Add Product Buttons
@@ -1825,6 +1905,72 @@ function setupEventListeners() {
     }
   });
 
+  // Hero Bento Main Showcase Live Controls & Quick Select
+  const heroBadgeInput = document.getElementById("heroShowcaseBadgeInput");
+  const heroLinkedIdInput = document.getElementById("heroShowcaseLinkedIdInput");
+  const heroTitleInput = document.getElementById("heroShowcaseTitleInput");
+  const heroDescInput = document.getElementById("heroShowcaseDescInput");
+  const heroImageInput = document.getElementById("heroShowcaseImageInput");
+  const heroBtnTextInput = document.getElementById("heroShowcaseBtnTextInput");
+  const heroProductSelect = document.getElementById("heroShowcaseProductSelect");
+  const adminHeroShowcaseForm = document.getElementById("adminHeroShowcaseForm");
+
+  // Quick Select Product to auto-fill
+  heroProductSelect?.addEventListener("change", (e) => {
+    const selectedId = e.target.value;
+    if (!selectedId) return;
+
+    const prod = productsList.find(p => p.id === selectedId);
+    if (prod) {
+      if (heroLinkedIdInput) heroLinkedIdInput.value = prod.id;
+      if (heroBadgeInput) heroBadgeInput.value = `👑 #1 BEST SELLER • ${prod.category || "FLAGSHIP"}`;
+      if (heroTitleInput) heroTitleInput.value = prod.title;
+      if (heroDescInput) heroDescInput.value = prod.description || `Experience high performance engineering with ${prod.title}. Now available with fast shipping.`;
+      
+      const prodImg = (prod.images && prod.images.length > 0) ? prod.images[0] : prod.image;
+      if (prodImg && heroImageInput) {
+        heroImageInput.value = prodImg;
+      }
+      if (heroBtnTextInput) heroBtnTextInput.value = "View Product Details";
+      
+      updateHeroShowcaseLivePreviewUI();
+      showToast(`Selected "${prod.title}" for Hero Showcase!`, "info");
+    }
+  });
+
+  heroBadgeInput?.addEventListener("input", () => updateHeroShowcaseLivePreviewUI());
+  heroLinkedIdInput?.addEventListener("input", () => updateHeroShowcaseLivePreviewUI());
+  heroTitleInput?.addEventListener("input", () => updateHeroShowcaseLivePreviewUI());
+  heroDescInput?.addEventListener("input", () => updateHeroShowcaseLivePreviewUI());
+  heroImageInput?.addEventListener("input", () => updateHeroShowcaseLivePreviewUI());
+  heroBtnTextInput?.addEventListener("input", () => updateHeroShowcaseLivePreviewUI());
+
+  adminHeroShowcaseForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const saveBtn = document.getElementById("heroShowcaseSaveBtn");
+    if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = "Publishing Hero Banner..."; }
+
+    try {
+      const payload = {
+        badge: heroBadgeInput?.value.trim() || "AURA Neo-Titanium Flagship",
+        productId: heroLinkedIdInput?.value.trim() || "prod-1",
+        title: heroTitleInput?.value.trim() || "Redefining Acoustic Immersion & Wearable Tech.",
+        description: heroDescInput?.value.trim() || "",
+        image: heroImageInput?.value.trim() || "https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=800&q=80",
+        buttonText: heroBtnTextInput?.value.trim() || "Explore Collection"
+      };
+
+      await DBService.saveHeroShowcase(payload);
+      currentHeroShowcaseData = { ...payload };
+      updateHeroShowcaseLivePreviewUI();
+      showToast("👑 Hero Flagship Showcase banner saved and live on storefront!", "success");
+    } catch (err) {
+      showToast("Failed to save hero showcase: " + err.message, "error");
+    } finally {
+      if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = "💾 Save & Publish Hero Showcase"; }
+    }
+  });
+
   // Built-in Admin Gate Login Form (Modal)
   document.getElementById("gateLoginForm")?.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -1870,15 +2016,19 @@ function setupEventListeners() {
   });
 
   // Auto-Refresh on custom events and multi-tab updates (Silent in background)
-  window.addEventListener("aura_products_changed", () => refreshAllData({ silent: true }));
+  window.addEventListener("aura_products_changed", () => {
+    refreshAllData({ silent: true });
+    populateHeroProductDropdown();
+  });
   window.addEventListener("aura_orders_changed", () => refreshAllData({ silent: true }));
   window.addEventListener("aura_announcement_changed", () => loadAnnouncementAdminSettings());
+  window.addEventListener("aura_hero_showcase_changed", () => loadHeroShowcaseAdminSettings());
   window.addEventListener("aura_flash_deal_changed", () => loadFlashDealAdminSettings());
   window.addEventListener("aura_social_proof_changed", () => loadSocialProofAdminSettings());
 
   // Real-time synchronization across browser tabs (Silent)
   window.addEventListener("storage", (e) => {
-    if (e.key === "aura_orders_cache" || e.key === "aura_products_cache" || e.key === "aura_announcement_cache" || e.key === "aura_flash_deal_cache" || e.key === "aura_social_proof_cache") {
+    if (e.key === "aura_orders_cache" || e.key === "aura_products_cache" || e.key === "aura_announcement_cache" || e.key === "aura_hero_showcase_cache" || e.key === "aura_flash_deal_cache" || e.key === "aura_social_proof_cache") {
       refreshAllData({ silent: true });
     }
   });

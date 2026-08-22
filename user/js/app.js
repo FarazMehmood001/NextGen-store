@@ -34,6 +34,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   initLiveActivityTicker();
   await loadAnnouncementTicker();
   await loadPromoBanner();
+  await loadHeroShowcase();
   await loadFlashDealCard();
   await loadSocialProofCard();
   setupFAQAccordion();
@@ -376,12 +377,52 @@ async function loadSocialProofCard() {
   updateBentoGridState();
 }
 
+// ==================== HERO BENTO SHOWCASE (BEST SELLER / FLAGSHIP) ====================
+let currentHeroLinkedProductId = "prod-1";
+
+async function loadHeroShowcase() {
+  const badgeTextEl = document.getElementById("heroMainBadgeText");
+  const titleEl = document.getElementById("heroMainTitle");
+  const descEl = document.getElementById("heroMainDesc");
+  const imgEl = document.getElementById("heroMainImage");
+  const btnTextEl = document.getElementById("heroShopNowBtnText");
+  const visualEl = document.getElementById("heroMainVisual");
+
+  try {
+    const data = await DBService.getHeroShowcase();
+    if (data) {
+      if (badgeTextEl && data.badge) badgeTextEl.textContent = data.badge;
+      if (titleEl && data.title) titleEl.innerHTML = data.title;
+      if (descEl && data.description) descEl.textContent = data.description;
+      if (imgEl && data.image) imgEl.src = data.image;
+      if (btnTextEl && data.buttonText) btnTextEl.textContent = data.buttonText;
+      if (data.productId) currentHeroLinkedProductId = data.productId;
+    }
+  } catch (err) {
+    console.warn("Failed to load hero showcase settings:", err);
+  }
+
+  if (visualEl && !visualEl.dataset.hasHeroListener) {
+    visualEl.dataset.hasHeroListener = "true";
+    visualEl.addEventListener("click", () => {
+      if (currentHeroLinkedProductId && typeof window.appOpenProductDetails === "function") {
+        window.appOpenProductDetails(currentHeroLinkedProductId);
+      } else {
+        document.getElementById("productsSection")?.scrollIntoView({ behavior: "smooth" });
+      }
+    });
+  }
+}
+
 // Listen for admin changes in real time across tabs and events
 window.addEventListener("aura_announcement_changed", () => {
   loadAnnouncementTicker();
 });
 window.addEventListener("aura_promo_banner_changed", () => {
   loadPromoBanner();
+});
+window.addEventListener("aura_hero_showcase_changed", () => {
+  loadHeroShowcase();
 });
 window.addEventListener("aura_flash_deal_changed", () => {
   loadFlashDealCard();
@@ -395,6 +436,9 @@ window.addEventListener("storage", (e) => {
   }
   if (e.key === "aura_promo_banner_cache") {
     loadPromoBanner();
+  }
+  if (e.key === "aura_hero_showcase_cache") {
+    loadHeroShowcase();
   }
   if (e.key === "aura_flash_deal_cache") {
     loadFlashDealCard();

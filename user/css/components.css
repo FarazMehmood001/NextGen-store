@@ -241,20 +241,60 @@
 
 .bento-main-visual {
   position: relative;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   overflow: hidden;
-  background: radial-gradient(circle at center, rgba(6, 182, 212, 0.2) 0%, transparent 70%);
+  background: radial-gradient(circle at center, rgba(6, 182, 212, 0.25) 0%, rgba(59, 130, 246, 0.08) 50%, transparent 80%);
   padding: 1.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+  border: 1px solid rgba(6, 182, 212, 0.2);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.bento-main-visual:hover {
+  border-color: rgba(6, 182, 212, 0.5);
+  box-shadow: 0 10px 30px rgba(6, 182, 212, 0.2);
+  transform: translateY(-2px);
+}
+
+.hero-visual-badge-overlay {
+  position: absolute;
+  bottom: 12px;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(6, 182, 212, 0.4);
+  color: var(--color-cyan);
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: 20px;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: all 0.3s ease;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.bento-main-visual:hover .hero-visual-badge-overlay {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .bento-main-visual img {
-  max-height: 220px;
+  max-height: 240px;
+  width: auto;
+  max-width: 100%;
   object-fit: contain;
+  border-radius: var(--radius-md);
   filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.6));
   animation: bentoFloat 4s ease-in-out infinite alternate;
+  transition: transform 0.35s ease;
+}
+
+.bento-main-visual:hover img {
+  transform: scale(1.05);
 }
 
 @keyframes bentoFloat {

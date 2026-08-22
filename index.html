@@ -138,22 +138,22 @@
     <div class="container">
       <div class="hero-bento-grid all-deals-hidden" id="heroBentoGrid">
 
-        <!-- BENTO 1: Large Flagship Feature Showcase -->
-        <div class="bento-card bento-main">
+        <!-- BENTO 1: Large Flagship Feature Showcase (Admin Controlled) -->
+        <div class="bento-card bento-main" id="heroMainBanner">
           <div>
-            <div class="bento-badge-live">
+            <div class="bento-badge-live" id="heroMainBadge">
               <span class="live-pulse-dot"></span>
-              AURA Neo-Titanium Flagship
+              <span id="heroMainBadgeText">AURA Neo-Titanium Flagship</span>
             </div>
-            <h1 class="bento-main-title">
+            <h1 class="bento-main-title" id="heroMainTitle">
               Redefining <span class="gradient-text-aurora">Acoustic Immersion</span> & Wearable Tech.
             </h1>
-            <p class="bento-main-desc">
+            <p class="bento-main-desc" id="heroMainDesc">
               Precision titanium engineering, adaptive spatial cancellation, and real-time cloud synchronization.
             </p>
             <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
               <a href="#productsSection" class="btn btn-primary btn-lg" id="heroShopNowBtn">
-                Explore Collection
+                <span id="heroShopNowBtnText">Explore Collection</span>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                   <line x1="5" y1="12" x2="19" y2="12"></line>
                   <polyline points="12 5 19 12 12 19"></polyline>
@@ -166,9 +166,10 @@
             </div>
           </div>
 
-          <div class="bento-main-visual">
-            <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80"
-              alt="AURA Flagship Headphones">
+          <div class="bento-main-visual" id="heroMainVisual" role="button" tabindex="0" title="Click to view product details">
+            <div class="hero-visual-badge-overlay">🔍 Click to View Product</div>
+            <img id="heroMainImage" src="https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=800&q=80"
+              alt="AURA Flagship Product">
           </div>
         </div>
 
