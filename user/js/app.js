@@ -241,13 +241,13 @@ async function loadPromoBanner() {
         };
       }
 
-      promoSection.style.display = "block";
+      promoSection.style.setProperty('display', 'block', 'important');
     } else {
-      promoSection.style.display = "none";
+      promoSection.style.setProperty('display', 'none', 'important');
     }
   } catch (err) {
     console.warn("Failed to load promo banner:", err);
-    promoSection.style.display = "none";
+    promoSection.style.setProperty('display', 'none', 'important');
   }
 }
 

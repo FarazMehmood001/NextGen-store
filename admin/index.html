@@ -403,15 +403,15 @@
             </form>
           </div>
 
-          <!-- ==================== PROMOTIONAL DISCOUNT BANNER MANAGEMENT ==================== -->
+          <!-- ==================== DEAL OF THE DAY / PROMOTIONAL BANNER MANAGEMENT ==================== -->
           <div class="admin-card" style="margin-top: 2rem;">
             <div class="admin-card-header">
               <div>
                 <h3 class="admin-card-title">
-                  <span>🎁 Promotional Discount Banner (Storefront Offer)</span>
+                  <span>🔥 Deal of the Day & Special Promo Banner</span>
                 </h3>
                 <p style="color:var(--text-secondary); font-size:0.85rem; margin-top:0.25rem;">
-                  Control the big highlighted discount & coupon section displayed across the main storefront.
+                  Configure and publish the official Deal of the Day / Discount Section on the storefront.
                 </p>
               </div>
             </div>
@@ -420,7 +420,7 @@
             <div style="margin-bottom:1.5rem; background:var(--bg-elevated); border:1px solid var(--glass-border); border-radius:var(--radius-lg); padding:1.5rem;">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
                 <h4 style="font-size:0.9rem; font-weight:700; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.04em;">
-                  👁️ Real-Time Storefront Banner Preview
+                  👁️ Real-Time Deal of the Day Storefront Preview
                 </h4>
                 <span style="font-size:0.75rem; color:var(--text-muted);">Exact visual appearance on homepage</span>
               </div>
@@ -429,17 +429,17 @@
                 style="background: linear-gradient(135deg, rgba(249, 115, 22, 0.14) 0%, rgba(244, 63, 94, 0.14) 50%, rgba(139, 92, 246, 0.14) 100%); border: 1px solid rgba(249, 115, 22, 0.3); border-radius:12px; padding: 1.75rem; text-align: center;">
                 <div id="adminPromoPreviewBadge"
                   style="display:inline-block; margin-bottom:0.75rem; background:rgba(249,115,22,0.18); color:var(--color-orange); border:1px solid rgba(249,115,22,0.4); padding:3px 12px; border-radius:20px; font-size:0.8rem; font-weight:800;">
-                  🔥 Exclusive Limited Time Offer
+                  🔥 Deal of the Day • Special Offer
                 </div>
                 <h3 id="adminPromoPreviewTitle" style="font-size: 1.6rem; font-weight:800; margin-bottom: 0.5rem; color:#f8fafc;">
-                  Unlock 10% Off Your Entire Cart
+                  Special Deal of the Day
                 </h3>
                 <p id="adminPromoPreviewDesc" style="color: var(--text-secondary); margin-bottom: 1.25rem; font-size:0.92rem;">
                   Use coupon code <strong id="adminPromoPreviewCode" style="background: rgba(15, 23, 42, 0.9); padding: 0.2rem 0.6rem; border-radius: 6px; border: 1px solid rgba(249, 115, 22, 0.5); color: var(--color-orange); font-size:0.95rem;">AURA10</strong> during checkout for instant savings.
                 </p>
                 <div style="display:flex; gap:0.6rem; justify-content:center; flex-wrap:wrap;">
                   <button type="button" class="btn btn-primary btn-sm" id="adminPromoPreviewBtn" style="background: var(--grad-sunset); border:none; pointer-events:none;">
-                    Start Shopping Now
+                    Grab Deal Now
                   </button>
                   <button type="button" class="btn btn-secondary btn-sm" style="font-weight:800; pointer-events:none;">
                     📋 Copy Code
@@ -453,7 +453,7 @@
               <div class="form-group"
                 style="background:var(--bg-elevated); padding:1rem 1.25rem; border-radius:var(--radius-md); border:1px solid var(--glass-border); display:flex; align-items:center; justify-content:space-between;">
                 <div>
-                  <strong style="display:block; font-size:0.95rem; color:var(--text-primary);">Enable Promotional Discount Banner</strong>
+                  <strong style="display:block; font-size:0.95rem; color:var(--text-primary);">Enable Deal of the Day Banner</strong>
                   <span style="font-size:0.8rem; color:var(--text-secondary);">When switched OFF, this banner is completely removed from the storefront.</span>
                 </div>
                 <label class="switch">
@@ -466,24 +466,24 @@
                 <div class="form-group">
                   <label class="form-label" for="promoBannerBadgeInput">Offer Badge Tag</label>
                   <input type="text" id="promoBannerBadgeInput" class="form-input"
-                    placeholder="e.g. 🔥 Exclusive Limited Time Offer" value="🔥 Exclusive Limited Time Offer">
+                    placeholder="e.g. 🔥 Deal of the Day" value="🔥 Deal of the Day • Special Offer">
                 </div>
 
                 <div class="form-group">
                   <label class="form-label" for="promoBannerCouponInput">Coupon Code (Uppercase)</label>
                   <input type="text" id="promoBannerCouponInput" class="form-input"
-                    placeholder="e.g. AURA10 or NEXTGEN20" value="AURA10" style="text-transform:uppercase; font-weight:800; letter-spacing:1px;">
+                    placeholder="e.g. AURA10 or DEAL50" value="AURA10" style="text-transform:uppercase; font-weight:800; letter-spacing:1px;">
                 </div>
               </div>
 
               <div class="form-group">
-                <label class="form-label" for="promoBannerTitleInput">Main Offer Headline *</label>
+                <label class="form-label" for="promoBannerTitleInput">Main Deal Headline *</label>
                 <input type="text" id="promoBannerTitleInput" class="form-input"
-                  placeholder="e.g. Unlock 10% Off Your Entire Cart" value="Unlock 10% Off Your Entire Cart" required>
+                  placeholder="e.g. Special Deal of the Day — 10% OFF" value="Special Deal of the Day" required>
               </div>
 
               <div class="form-group">
-                <label class="form-label" for="promoBannerDescInput">Offer Description & Details *</label>
+                <label class="form-label" for="promoBannerDescInput">Deal Description & Instructions *</label>
                 <textarea id="promoBannerDescInput" class="form-input" rows="2"
                   placeholder="Use coupon code AURA10 during checkout for instant savings." required>Use coupon code AURA10 during checkout for instant savings.</textarea>
               </div>
@@ -491,15 +491,15 @@
               <div class="form-group">
                 <label class="form-label" for="promoBannerBtnTextInput">Call to Action Button Text</label>
                 <input type="text" id="promoBannerBtnTextInput" class="form-input"
-                  placeholder="e.g. Start Shopping Now" value="Start Shopping Now">
+                  placeholder="e.g. Grab Deal Now" value="Grab Deal Now">
               </div>
 
               <div style="display:flex; gap:1rem; align-items:center; margin-top:1.5rem; justify-content:flex-end;">
                 <button type="button" class="btn btn-secondary" id="promoBannerTurnOffBtn">
-                  🚫 Disable & Hide Banner
+                  🚫 Disable & Hide Deal of the Day
                 </button>
                 <button type="submit" class="btn btn-primary" id="promoBannerSaveBtn" style="padding:0.7rem 1.75rem;">
-                  💾 Save & Publish Promo Banner
+                  💾 Save & Publish Deal of the Day
                 </button>
               </div>
             </form>
